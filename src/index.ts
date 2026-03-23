@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
+import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -51,12 +52,24 @@ app.use('/api/social', socialRouter);
 app.use('/api/weather', weatherRouter);
 app.use('/api/features', featuresRouter);
 
-// --- Serve static client build in production ---
+// --- Serve static client build (only when client/dist exists, e.g. monorepo) ---
 const clientDist = join(__dirname, '../../client/dist');
-app.use(express.static(clientDist));
-app.get('*', (_req, res) => {
-  res.sendFile(join(clientDist, 'index.html'));
-});
+if (existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+  app.get('*', (_req, res) => {
+    res.sendFile(join(clientDist, 'index.html'));
+  });
+} else {
+  // Standalone API server — return info on root
+  app.get('/', (_req, res) => {
+    res.json({
+      name: 'FloodMAS API',
+      version: '1.0.0',
+      status: 'running',
+      docs: '/api/health',
+    });
+  });
+}
 
 const server = app.listen(PORT, () => {
   console.log(`🌊 FloodMAS server running on http://localhost:${PORT}`);
