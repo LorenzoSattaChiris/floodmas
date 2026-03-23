@@ -58,8 +58,34 @@ app.get('*', (_req, res) => {
   res.sendFile(join(clientDist, 'index.html'));
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🌊 FloodMAS server running on http://localhost:${PORT}`);
 });
+
+server.on('error', (err: NodeJS.ErrnoException) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use. Retrying in 1 s...`);
+    setTimeout(() => {
+      server.close();
+      server.listen(PORT);
+    }, 1000);
+  } else {
+    throw err;
+  }
+});
+
+// --- Graceful shutdown ---
+function shutdown(signal: string) {
+  console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
+  server.close(() => {
+    console.log('✅ Server closed.');
+    process.exit(0);
+  });
+  // Force exit after 5 s if connections don't drain
+  setTimeout(() => process.exit(1), 5000).unref();
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
 
 export default app;
