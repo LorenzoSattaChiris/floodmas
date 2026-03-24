@@ -33,6 +33,7 @@ app.use(cors({
     'http://localhost:5174',
     'http://localhost:5175',
     'http://localhost:3000',
+    'https://floodmas.lsattachiris.com',
     /\.floodmas\.lsattachiris\.com$/,
   ],
 }));
@@ -42,6 +43,9 @@ app.use(rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 }));
+
+// --- Serve server's own static assets (favicon etc.) ---
+app.use(express.static(join(__dirname, '../public')));
 
 // --- API routes ---
 app.use('/api/health', healthRouter);
