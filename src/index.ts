@@ -6,6 +6,8 @@ import rateLimit from 'express-rate-limit';
 import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import pino from 'pino';
+import pinoHttp from 'pino-http';
 
 import floodsRouter from './routes/floods.js';
 import stationsRouter from './routes/stations.js';
@@ -14,12 +16,16 @@ import socialRouter from './routes/social.js';
 import healthRouter from './routes/health.js';
 import weatherRouter from './routes/weather.js';
 import featuresRouter from './routes/features.js';
+import { logger } from './logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+
+// --- Request logging ---
+app.use(pinoHttp({ logger, autoLogging: { ignore: (req) => req.url === '/favicon.ico' } }));
 
 // --- Security & middleware ---
 app.use(helmet({
@@ -76,12 +82,12 @@ if (existsSync(clientDist)) {
 }
 
 const server = app.listen(PORT, () => {
-  console.log(`🌊 FloodMAS server running on http://localhost:${PORT}`);
+  logger.info({ port: PORT }, `🌊 FloodMAS server running on http://localhost:${PORT}`);
 });
 
 server.on('error', (err: NodeJS.ErrnoException) => {
   if (err.code === 'EADDRINUSE') {
-    console.error(`❌ Port ${PORT} is already in use. Retrying in 1 s...`);
+    logger.error({ port: PORT }, `❌ Port ${PORT} is already in use. Retrying in 1 s...`);
     setTimeout(() => {
       server.close();
       server.listen(PORT);
@@ -93,9 +99,9 @@ server.on('error', (err: NodeJS.ErrnoException) => {
 
 // --- Graceful shutdown ---
 function shutdown(signal: string) {
-  console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
+  logger.info({ signal }, `🛑 Received ${signal}. Shutting down gracefully...`);
   server.close(() => {
-    console.log('✅ Server closed.');
+    logger.info('✅ Server closed.');
     process.exit(0);
   });
   // Force exit after 5 s if connections don't drain

@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getFloodFeed } from '../services/feed.js';
+import { logger } from '../logger.js';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.get('/feed', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching flood feed:', err);
+    logger.error({ err }, 'Failed to fetch flood feed');
     res.status(502).json({ error: 'Failed to fetch flood feed' });
   }
 });

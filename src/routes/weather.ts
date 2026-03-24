@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getPrecipitationGrid, getRiverDischarge } from '../services/open-meteo.js';
+import { logger } from '../logger.js';
 
 const router = Router();
 
@@ -10,6 +11,7 @@ router.get('/precipitation', async (_req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching precipitation:', err);
+    logger.error({ err }, 'Failed to fetch precipitation data');
     res.status(502).json({ error: 'Failed to fetch weather data' });
   }
 });
@@ -35,6 +37,7 @@ router.get('/river-discharge', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching river discharge:', err);
+    logger.error({ err }, 'Failed to fetch river discharge data');
     res.status(502).json({ error: 'Failed to fetch river discharge data' });
   }
 });

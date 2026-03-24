@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import * as ea from '../services/ea-api.js';
+import { logger } from '../logger.js';
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.get('/', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching stations:', err);
+    logger.error({ err }, 'Failed to fetch stations from EA API');
     res.status(502).json({ error: 'Failed to fetch stations from EA API' });
   }
 });
@@ -27,6 +29,7 @@ router.get('/:id/readings', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching station readings:', err);
+    logger.error({ err }, 'Failed to fetch station readings');
     res.status(502).json({ error: 'Failed to fetch station readings' });
   }
 });
@@ -38,6 +41,7 @@ router.get('/readings/latest', async (_req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching latest readings:', err);
+    logger.error({ err }, 'Failed to fetch latest readings');
     res.status(502).json({ error: 'Failed to fetch latest readings' });
   }
 });

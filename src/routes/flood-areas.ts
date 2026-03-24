@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import * as ea from '../services/ea-api.js';
+import { logger } from '../logger.js';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.get('/', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching flood areas:', err);
+    logger.error({ err }, 'Failed to fetch flood areas');
     res.status(502).json({ error: 'Failed to fetch flood areas' });
   }
 });
@@ -23,6 +25,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching flood area detail:', err);
+    logger.error({ err }, 'Failed to fetch flood area detail');
     res.status(502).json({ error: 'Failed to fetch flood area detail' });
   }
 });

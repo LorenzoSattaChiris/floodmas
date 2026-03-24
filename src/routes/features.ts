@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getFloodDefences, getHistoricFloods } from '../services/arcgis.js';
+import { logger } from '../logger.js';
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.get('/defences', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching flood defences:', err);
+    logger.error({ err }, 'Failed to fetch flood defences');
     res.status(502).json({ error: 'Failed to fetch flood defences' });
   }
 });
@@ -31,6 +33,7 @@ router.get('/historic-floods', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     console.error('Error fetching historic floods:', err);
+    logger.error({ err }, 'Failed to fetch historic flood outlines');
     res.status(502).json({ error: 'Failed to fetch historic flood outlines' });
   }
 });
