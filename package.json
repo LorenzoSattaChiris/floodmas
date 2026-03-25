@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc && node --input-type=module -e \"import{cpSync}from'fs';cpSync('src/dataset','dist/dataset',{recursive:true});\"",
+    "build": "tsc",
     "start": "node dist/index.js",
     "postinstall": "npm run build"
   },

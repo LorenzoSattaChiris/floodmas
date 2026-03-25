@@ -9,6 +9,7 @@
  */
 
 import { readFileSync, existsSync, createReadStream } from 'fs';
+import { readFile } from 'fs/promises';
 import { createInterface } from 'readline';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -17,7 +18,12 @@ import { logger } from '../logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const DATASET_DIR = join(__dirname, '../dataset');
+// In compiled code (dist/services/datasets.js), go 2 levels up to reach the project root,
+// then into src/dataset — the canonical location of dataset files.
+// In dev mode (tsx watches src/), go 1 level up which resolves to src/dataset as well.
+const _srcDataset = join(__dirname, '../../src/dataset');
+const _localDataset = join(__dirname, '../dataset');
+const DATASET_DIR = existsSync(_srcDataset) ? _srcDataset : _localDataset;
 
 /** Yield to the event loop — lets GC run and keeps Passenger alive */
 const tick = () => new Promise<void>(r => setImmediate(r));
@@ -34,12 +40,10 @@ const WGS84 = 'EPSG:4326';
 
 // ── CSV Parsing ──────────────────────────────────────────────────────
 
-/** Parse a CSV file into an array of objects, handling quoted fields with commas */
-function parseCSV(filePath: string, encoding: BufferEncoding = 'latin1'): Record<string, string>[] {
-  const raw = readFileSync(filePath, encoding);
+/** Parse CSV string content into an array of objects (no I/O — accepts pre-read string) */
+function parseCSVFromString(raw: string): Record<string, string>[] {
   const lines = raw.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 2) return [];
-
   const headers = splitCSVRow(lines[0]);
   return lines.slice(1).map(line => {
     const values = splitCSVRow(line);
@@ -49,6 +53,11 @@ function parseCSV(filePath: string, encoding: BufferEncoding = 'latin1'): Record
     });
     return obj;
   });
+}
+
+/** Parse a CSV file into an array of objects, handling quoted fields with commas */
+function parseCSV(filePath: string, encoding: BufferEncoding = 'latin1'): Record<string, string>[] {
+  return parseCSVFromString(readFileSync(filePath, encoding));
 }
 
 /** Split a CSV row respecting quoted fields */
@@ -532,11 +541,11 @@ function convertRing(ring: number[][], proj: Proj4Fn): number[][] {
   });
 }
 
-function loadFloodRiskAreas(proj: Proj4Fn): FloodRiskAreasGeoJSON {
+async function loadFloodRiskAreas(proj: Proj4Fn): Promise<FloodRiskAreasGeoJSON> {
   const filePath = join(DATASET_DIR, 'floodriskareas', 'Flood_Risk_Areas.geojson');
   try {
     if (!existsSync(filePath)) { logger.warn('Flood Risk Areas file not found'); return { type: 'FeatureCollection', features: [] }; }
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await readFile(filePath, 'utf8');
     const geojson = JSON.parse(raw);
     const features: FloodRiskAreaFeature[] = (geojson.features || []).map((f: any) => {
       let coordinates: number[][][];
@@ -693,11 +702,11 @@ function convertGeoJSONToWGS84(geojson: any, proj: Proj4Fn): any[] {
   });
 }
 
-function loadWFDCatchments(proj: Proj4Fn): WFDCatchmentsGeoJSON {
+async function loadWFDCatchments(proj: Proj4Fn): Promise<WFDCatchmentsGeoJSON> {
   const filePath = join(DATASET_DIR, 'floodwaterbody', 'WFD_River_Water_Body_Catchments_Cycle_2.geojson');
   if (!existsSync(filePath)) { logger.warn('WFD Catchments file not found (254MB — deploy manually)'); return { type: 'FeatureCollection', features: [] }; }
   try {
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await readFile(filePath, 'utf8');
     const geojson = JSON.parse(raw);
     const converted = convertGeoJSONToWGS84(geojson, proj);
     const features: WFDCatchmentFeature[] = converted.map((f: any) => ({
@@ -721,11 +730,11 @@ function loadWFDCatchments(proj: Proj4Fn): WFDCatchmentsGeoJSON {
   }
 }
 
-function loadNFMHotspots(proj: Proj4Fn): NFMHotspotsGeoJSON {
+async function loadNFMHotspots(proj: Proj4Fn): Promise<NFMHotspotsGeoJSON> {
   const filePath = join(DATASET_DIR, 'floodheatmap', 'NFM_Hotspots.geojson');
   if (!existsSync(filePath)) { logger.warn('NFM Hotspots file not found'); return { type: 'FeatureCollection', features: [] }; }
   try {
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await readFile(filePath, 'utf8');
     const geojson = JSON.parse(raw);
     const converted = convertGeoJSONToWGS84(geojson, proj);
     const features: NFMHotspotFeature[] = converted.map((f: any) => ({
@@ -743,13 +752,12 @@ function loadNFMHotspots(proj: Proj4Fn): NFMHotspotsGeoJSON {
   }
 }
 
-function loadSchools(): SchoolsGeoJSON {
+async function loadSchools(): Promise<SchoolsGeoJSON> {
   const csvPath = join(DATASET_DIR, 'schools', 'edubaseallstatefunded20260325.csv');
   const coordsPath = join(DATASET_DIR, 'schools', 'postcode-coords.json');
   try {
-    const rows = parseCSV(csvPath, 'utf8');
-    const coordsRaw = readFileSync(coordsPath, 'utf8');
-    const coords: Record<string, [number, number]> = JSON.parse(coordsRaw);
+    const rows = parseCSVFromString(await readFile(csvPath, 'utf8'));
+    const coords: Record<string, [number, number]> = JSON.parse(await readFile(coordsPath, 'utf8'));
 
     const features: SchoolFeature[] = [];
     for (const r of rows) {
@@ -780,12 +788,12 @@ function loadSchools(): SchoolsGeoJSON {
   }
 }
 
-function loadBathingWaters(): BathingWatersGeoJSON {
+async function loadBathingWaters(): Promise<BathingWatersGeoJSON> {
   const sitePath = join(DATASET_DIR, 'bathing', 'site.csv');
   const classPath = join(DATASET_DIR, 'bathing', 'classifications.csv');
   try {
-    const siteRows = parseCSV(sitePath, 'utf8');
-    const classRows = parseCSV(classPath, 'utf8');
+    const siteRows = parseCSVFromString(await readFile(sitePath, 'utf8'));
+    const classRows = parseCSVFromString(await readFile(classPath, 'utf8'));
 
     // Build map of latest classification per EUBWID
     const latestClass: Record<string, { year: number; label: string }> = {};
@@ -833,10 +841,10 @@ function loadBathingWaters(): BathingWatersGeoJSON {
   }
 }
 
-function loadRamsar(): RamsarGeoJSON {
+async function loadRamsar(): Promise<RamsarGeoJSON> {
   const filePath = join(DATASET_DIR, 'ramsar', 'Ramsar_England_7440752995595243115.geojson');
   try {
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await readFile(filePath, 'utf8');
     const geojson = JSON.parse(raw);
     const features: RamsarFeature[] = (geojson.features || []).map((f: any) => ({
       type: 'Feature' as const,
@@ -857,10 +865,10 @@ function loadRamsar(): RamsarGeoJSON {
   }
 }
 
-function loadWaterCompanyBoundaries(): WaterCompanyBoundariesGeoJSON {
+async function loadWaterCompanyBoundaries(): Promise<WaterCompanyBoundariesGeoJSON> {
   const filePath = join(DATASET_DIR, 'waterboundaries', 'UC2_263904301232770618.geojson');
   try {
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await readFile(filePath, 'utf8');
     const geojson = JSON.parse(raw);
     const features: WaterCompanyBoundaryFeature[] = (geojson.features || []).map((f: any) => ({
       type: 'Feature' as const,
@@ -881,10 +889,10 @@ function loadWaterCompanyBoundaries(): WaterCompanyBoundariesGeoJSON {
   }
 }
 
-function loadEDMOverflows(): EDMOverflowsGeoJSON {
+async function loadEDMOverflows(): Promise<EDMOverflowsGeoJSON> {
   const filePath = join(DATASET_DIR, 'stormoverflow', 'Storm_Overflow_EDM_Annual_Returns_2024_-104550533390684639.geojson');
   try {
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await readFile(filePath, 'utf8');
     const geojson = JSON.parse(raw);
     const features: EDMOverflowFeature[] = [];
     for (const f of geojson.features || []) {
@@ -919,10 +927,10 @@ function loadEDMOverflows(): EDMOverflowsGeoJSON {
   }
 }
 
-function loadWINEPOverflows(): WINEPOverflowsGeoJSON {
+async function loadWINEPOverflows(): Promise<WINEPOverflowsGeoJSON> {
   const filePath = join(DATASET_DIR, 'currentstormoverflow', 'Water_Company_Sewer_Storm_Overflow_Under_Investigation.geojson');
   try {
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await readFile(filePath, 'utf8');
     const geojson = JSON.parse(raw);
     const features: WINEPOverflowFeature[] = [];
     for (const f of geojson.features || []) {
@@ -958,12 +966,12 @@ function loadWINEPOverflows(): WINEPOverflowsGeoJSON {
   }
 }
 
-function loadHospitals(): HospitalsGeoJSON {
+async function loadHospitals(): Promise<HospitalsGeoJSON> {
   const csvPath = join(DATASET_DIR, 'hospitals', '18_March_2026_CQC_directory.csv');
   const coordsPath = join(DATASET_DIR, 'hospitals', 'postcode-coords.json');
   try {
     // CQC CSV has 4 preamble rows before the actual header
-    let raw = readFileSync(csvPath, 'utf8');
+    let raw = await readFile(csvPath, 'utf8');
     if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
     const allLines = raw.split(/\r?\n/).filter(l => l.trim());
     let headerIdx = -1;
@@ -977,8 +985,7 @@ function loadHospitals(): HospitalsGeoJSON {
     const headers = splitCSVRow(allLines[headerIdx]).map(h => h.trim());
     const idx = (name: string) => headers.indexOf(name);
 
-    const coordsRaw = readFileSync(coordsPath, 'utf8');
-    const coords: Record<string, [number, number]> = JSON.parse(coordsRaw);
+    const coords: Record<string, [number, number]> = JSON.parse(await readFile(coordsPath, 'utf8'));
 
     const features: HospitalFeature[] = [];
     for (let i = headerIdx + 1; i < allLines.length; i++) {
