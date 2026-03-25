@@ -28,7 +28,7 @@ export const GUARDRAILS = {
   /** Max tool-call iterations for the coordinator */
   coordinatorMaxIterations: 10,
   /** Max total LLM calls (coordinator + all specialists) per query */
-  maxLlmCalls: parseInt(process.env.MAX_LLM_CALLS || '5', 10),
+  maxLlmCalls: parseInt(process.env.MAX_LLM_CALLS || '12', 10),
   /** Abort timeout for entire query (ms) */
   queryTimeoutMs: 300_000,
   /** Session TTL after completion (ms) */

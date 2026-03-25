@@ -1098,12 +1098,44 @@ async function getProj4(): Promise<Proj4Fn | null> {
   }
 }
 
-/** Generic lazy loader: loads on first call, caches result, deduplicates concurrent calls */
+/**
+ * Global semaphore — only 1 heavy dataset file loads at a time.
+ * This prevents OOM when multiple dataset endpoints are hit concurrently
+ * (each GeoJSON file can expand to 200-600 MB of parsed objects).
+ */
+let _semaphoreQueue: (() => void)[] = [];
+let _semaphoreActive = 0;
+const SEMAPHORE_LIMIT = 1;
+
+function semaphoreAcquire(): Promise<void> {
+  if (_semaphoreActive < SEMAPHORE_LIMIT) {
+    _semaphoreActive++;
+    return Promise.resolve();
+  }
+  return new Promise<void>(resolve => {
+    _semaphoreQueue.push(resolve);
+  });
+}
+
+function semaphoreRelease(): void {
+  if (_semaphoreQueue.length > 0) {
+    const next = _semaphoreQueue.shift()!;
+    next();
+  } else {
+    _semaphoreActive--;
+  }
+}
+
+/** Generic lazy loader: loads on first call, caches result, deduplicates concurrent calls.
+ *  Uses a global semaphore so only 1 heavy file loads at a time. */
 async function lazyLoad<T>(cache: LazyCache<T>, name: string, loader: () => Promise<T>, fallback: T): Promise<T> {
   if (cache.data) return cache.data;
   if (cache.loading) return cache.loading;
   cache.loading = (async () => {
+    await semaphoreAcquire();
     try {
+      // Re-check after acquiring — another request may have loaded it while we waited
+      if (cache.data) return cache.data;
       const mem = () => Math.round(process.memoryUsage.rss() / 1024 / 1024);
       logger.info({ rss: mem() }, `📎 Lazy-loading ${name}…`);
       const result = await loader();
@@ -1114,6 +1146,7 @@ async function lazyLoad<T>(cache: LazyCache<T>, name: string, loader: () => Prom
       logger.error({ err }, `  ✗ ${name} failed`);
       return fallback;
     } finally {
+      semaphoreRelease();
       cache.loading = null;
     }
   })();

@@ -107,10 +107,16 @@ router.get('/:id', (req, res) => {
     return;
   }
 
+  // SSE heartbeat — keeps reverse proxies (Nginx, Passenger) from killing idle connections
+  const heartbeat = setInterval(() => {
+    res.write(':heartbeat\n\n');
+  }, 15_000);
+
   // Subscribe to live events
   const listener = (event: AgentEvent) => {
     send(event);
     if (event.type === 'stream_end' || event.type === 'error') {
+      clearInterval(heartbeat);
       res.write('data: [DONE]\n\n');
       res.end();
     }
@@ -120,6 +126,7 @@ router.get('/:id', (req, res) => {
 
   // Cleanup on client disconnect
   req.on('close', () => {
+    clearInterval(heartbeat);
     session.listeners.delete(listener);
   });
 });

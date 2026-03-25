@@ -65,7 +65,13 @@ app.use(helmet({
   contentSecurityPolicy: false, // Allow MapTiler tiles, ArcGIS WMS etc.
   crossOriginEmbedderPolicy: false,
 }));
-app.use(compression());
+app.use(compression({
+  filter: (req, res) => {
+    // Never compress SSE — compression buffers small events and prevents them from flushing
+    if (req.headers.accept === 'text/event-stream') return false;
+    return compression.filter(req, res);
+  },
+}));
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -81,6 +87,7 @@ app.use(rateLimit({
   max: 200,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.method === 'GET' && req.path.startsWith('/api/chat/'),
 }));
 app.use(express.json());
 
