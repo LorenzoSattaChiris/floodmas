@@ -7,7 +7,7 @@
  * Data: Environment Agency, Open Government Licence v3.0
  */
 
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import XLSX from 'xlsx';
@@ -16,7 +16,9 @@ import { logger } from '../logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const EDM_DIR = join(__dirname, '../dataset/floodevent');
+const EDM_DIR = existsSync(join(__dirname, '../../src/dataset/floodevent'))
+  ? join(__dirname, '../../src/dataset/floodevent')
+  : join(__dirname, '../dataset/floodevent');
 
 // ── Types ────────────────────────────────────────────────────────────
 

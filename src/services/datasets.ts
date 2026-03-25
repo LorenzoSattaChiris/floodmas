@@ -394,7 +394,9 @@ export interface DatasetSummary {
 let _datasetsReady = false;
 export function isDatasetsReady(): boolean { return _datasetsReady; }
 
-// ── In-Memory Cache (loaded once at startup) ─────────────────────────
+// ── In-Memory Cache ──────────────────────────────────────────────────
+// Phase 1 (core CSVs) loaded eagerly at startup.
+// Phase 2 (heavy GeoJSON) loaded lazily on first request — keeps RAM low.
 
 let defencesRegion: DefenceStats[] = [];
 let defencesUTLA: DefenceStats[] = [];
@@ -405,7 +407,6 @@ let homesUTLA: HomesBetterProtected[] = [];
 let propsConstituency: PropertiesAtRisk[] = [];
 let propsLTLA: PropertiesAtRisk[] = [];
 let propsUTLA: PropertiesAtRisk[] = [];
-let floodRiskAreasGeoJSON: FloodRiskAreasGeoJSON = { type: 'FeatureCollection', features: [] };
 let postcodeRiskMap = new Map<string, PostcodeRisk>();
 let postcodeKeys: string[] = [];
 let propertyRiskSummary: PropertyRiskSummary = {
@@ -414,15 +415,21 @@ let propertyRiskSummary: PropertyRiskSummary = {
   byRisk: { veryLow: 0, low: 0, medium: 0, high: 0 },
   byTypeAndRisk: {},
 };
-let wfdCatchmentsGeoJSON: WFDCatchmentsGeoJSON = { type: 'FeatureCollection', features: [] };
-let nfmHotspotsGeoJSON: NFMHotspotsGeoJSON = { type: 'FeatureCollection', features: [] };
-let schoolsGeoJSON: SchoolsGeoJSON = { type: 'FeatureCollection', features: [] };
-let hospitalsGeoJSON: HospitalsGeoJSON = { type: 'FeatureCollection', features: [] };
-let bathingWatersGeoJSON: BathingWatersGeoJSON = { type: 'FeatureCollection', features: [] };
-let ramsarGeoJSON: RamsarGeoJSON = { type: 'FeatureCollection', features: [] };
-let waterCompanyBoundariesGeoJSON: WaterCompanyBoundariesGeoJSON = { type: 'FeatureCollection', features: [] };
-let edmOverflowsGeoJSON: EDMOverflowsGeoJSON = { type: 'FeatureCollection', features: [] };
-let winepOverflowsGeoJSON: WINEPOverflowsGeoJSON = { type: 'FeatureCollection', features: [] };
+
+// Heavy GeoJSON: lazy-loaded on first request via getXxx() async getters.
+// Each cache entry is null (not loaded), a Promise (loading), or the loaded data.
+type LazyCache<T> = { data: T | null; loading: Promise<T> | null };
+
+const _floodRiskAreas: LazyCache<FloodRiskAreasGeoJSON> = { data: null, loading: null };
+const _wfdCatchments: LazyCache<WFDCatchmentsGeoJSON> = { data: null, loading: null };
+const _nfmHotspots: LazyCache<NFMHotspotsGeoJSON> = { data: null, loading: null };
+const _schools: LazyCache<SchoolsGeoJSON> = { data: null, loading: null };
+const _hospitals: LazyCache<HospitalsGeoJSON> = { data: null, loading: null };
+const _bathingWaters: LazyCache<BathingWatersGeoJSON> = { data: null, loading: null };
+const _ramsar: LazyCache<RamsarGeoJSON> = { data: null, loading: null };
+const _waterCompanyBoundaries: LazyCache<WaterCompanyBoundariesGeoJSON> = { data: null, loading: null };
+const _edmOverflows: LazyCache<EDMOverflowsGeoJSON> = { data: null, loading: null };
+const _winepOverflows: LazyCache<WINEPOverflowsGeoJSON> = { data: null, loading: null };
 
 // ── Parsing Functions ────────────────────────────────────────────────
 
@@ -1054,82 +1061,63 @@ export function initDatasetsCore() {
   }
 }
 
-/** Phase 2: heavy GeoJSON + large CSVs — loaded one at a time with event-loop yields */
+/** Phase 2: streamed CSV aggregates only — heavy GeoJSON deferred to lazy getters */
 export async function initDatasetsHeavy() {
   const mem = () => Math.round(process.memoryUsage.rss() / 1024 / 1024);
-  logger.info({ rss: mem() }, '📊 Phase 2 starting — loading heavy datasets one by one');
+  logger.info({ rss: mem() }, '📊 Phase 2 starting — loading streamed CSV aggregates');
 
-  // Load proj4 once for all BNG→WGS84 conversions
-  let proj: Proj4Fn | undefined;
-  try {
-    proj = (await import('proj4')).default;
-  } catch (err) {
-    logger.error({ err }, 'Failed to load proj4 — BNG datasets will be skipped');
-  }
-
-  // Helper: load a single dataset with isolated error handling + GC yield
-  async function step<T>(name: string, fn: () => T | Promise<T>): Promise<T | null> {
-    try {
-      const result = await fn();
-      await tick(); // yield to event loop — lets GC run, keeps Passenger alive
-      logger.info({ rss: mem() }, `  ✓ ${name}`);
-      return result;
-    } catch (err) {
-      logger.error({ err }, `  ✗ ${name} failed`);
-      return null;
-    }
-  }
-
-  // --- Each dataset loaded independently ---
-
-  if (proj) {
-    const fra = await step('Flood Risk Areas (44MB, BNG→WGS84)', () => loadFloodRiskAreas(proj!));
-    if (fra) floodRiskAreasGeoJSON = fra;
-  }
-
-  await step('Postcodes at Risk (269K rows, streamed)', () => loadPostcodeRisk());
-  await step('Property Risk Summary (2.4M rows, streamed)', () => loadPropertyRiskSummary());
-
-  // WFD Catchments — 254MB, gitignored, only present if manually deployed
-  if (proj) {
-    const wfd = await step('WFD River Catchments (254MB, BNG→WGS84)', () => loadWFDCatchments(proj!));
-    if (wfd) wfdCatchmentsGeoJSON = wfd;
-  }
-
-  if (proj) {
-    const nfm = await step('NFM Hotspots (BNG→WGS84)', () => loadNFMHotspots(proj!));
-    if (nfm) nfmHotspotsGeoJSON = nfm;
-  }
-
-  const sch = await step('Schools (9MB CSV + geocode)', () => loadSchools());
-  if (sch) schoolsGeoJSON = sch;
-
-  const hosp = await step('Hospitals (19MB CSV + geocode)', () => loadHospitals());
-  if (hosp) hospitalsGeoJSON = hosp;
-
-  const bath = await step('Bathing Waters', () => loadBathingWaters());
-  if (bath) bathingWatersGeoJSON = bath;
-
-  const ram = await step('Ramsar Wetlands (63MB)', () => loadRamsar());
-  if (ram) ramsarGeoJSON = ram;
-
-  const wc = await step('Water Company Boundaries (44MB)', () => loadWaterCompanyBoundaries());
-  if (wc) waterCompanyBoundariesGeoJSON = wc;
-
-  const edm = await step('EDM Storm Overflows (28MB)', () => loadEDMOverflows());
-  if (edm) edmOverflowsGeoJSON = edm;
-
-  const winep = await step('WINEP Storm Overflows (10MB)', () => loadWINEPOverflows());
-  if (winep) winepOverflowsGeoJSON = winep;
+  try { await loadPostcodeRisk(); } catch (err) { logger.error({ err }, 'Postcodes load failed'); }
+  await tick();
+  try { await loadPropertyRiskSummary(); } catch (err) { logger.error({ err }, 'Property summary load failed'); }
+  await tick();
 
   _datasetsReady = true;
-  logger.info({ rss: mem() }, '📊 Phase 2 complete — all heavy datasets processed');
+  logger.info({ rss: mem() }, '📊 Phase 2 complete — heavy GeoJSON will lazy-load on first request');
 }
 
 /** @deprecated Use initDatasetsCore() + initDatasetsHeavy() instead */
 export async function initDatasets() {
   initDatasetsCore();
   await initDatasetsHeavy();
+}
+
+// ── Lazy-load helper ─────────────────────────────────────────────────
+
+const EMPTY_FC = { type: 'FeatureCollection' as const, features: [] as any[] };
+
+/** Ensure proj4 is loaded (cached after first import) */
+let _proj4: Proj4Fn | null = null;
+async function getProj4(): Promise<Proj4Fn | null> {
+  if (_proj4) return _proj4;
+  try {
+    _proj4 = (await import('proj4')).default;
+    return _proj4;
+  } catch (err) {
+    logger.error({ err }, 'Failed to load proj4');
+    return null;
+  }
+}
+
+/** Generic lazy loader: loads on first call, caches result, deduplicates concurrent calls */
+async function lazyLoad<T>(cache: LazyCache<T>, name: string, loader: () => Promise<T>, fallback: T): Promise<T> {
+  if (cache.data) return cache.data;
+  if (cache.loading) return cache.loading;
+  cache.loading = (async () => {
+    try {
+      const mem = () => Math.round(process.memoryUsage.rss() / 1024 / 1024);
+      logger.info({ rss: mem() }, `📎 Lazy-loading ${name}…`);
+      const result = await loader();
+      cache.data = result;
+      logger.info({ rss: mem() }, `  ✓ ${name} loaded`);
+      return result;
+    } catch (err) {
+      logger.error({ err }, `  ✗ ${name} failed`);
+      return fallback;
+    } finally {
+      cache.loading = null;
+    }
+  })();
+  return cache.loading;
 }
 
 // ── Public API ───────────────────────────────────────────────────────
@@ -1159,8 +1147,12 @@ export function getPropertiesAtRisk(level?: string): PropertiesAtRisk[] {
   return [...propsConstituency, ...propsLTLA, ...propsUTLA];
 }
 
-export function getFloodRiskAreas(): FloodRiskAreasGeoJSON {
-  return floodRiskAreasGeoJSON;
+export async function getFloodRiskAreas(): Promise<FloodRiskAreasGeoJSON> {
+  return lazyLoad(_floodRiskAreas, 'Flood Risk Areas', async () => {
+    const proj = await getProj4();
+    if (!proj) return EMPTY_FC as FloodRiskAreasGeoJSON;
+    return loadFloodRiskAreas(proj);
+  }, EMPTY_FC as FloodRiskAreasGeoJSON);
 }
 
 export function getPostcodeRisk(postcode: string): PostcodeRisk | null {
@@ -1191,40 +1183,48 @@ export function getPropertyRiskSummary(): PropertyRiskSummary {
   return propertyRiskSummary;
 }
 
-export function getWFDCatchments(): WFDCatchmentsGeoJSON {
-  return wfdCatchmentsGeoJSON;
+export async function getWFDCatchments(): Promise<WFDCatchmentsGeoJSON> {
+  return lazyLoad(_wfdCatchments, 'WFD Catchments', async () => {
+    const proj = await getProj4();
+    if (!proj) return EMPTY_FC as WFDCatchmentsGeoJSON;
+    return loadWFDCatchments(proj);
+  }, EMPTY_FC as WFDCatchmentsGeoJSON);
 }
 
-export function getNFMHotspots(): NFMHotspotsGeoJSON {
-  return nfmHotspotsGeoJSON;
+export async function getNFMHotspots(): Promise<NFMHotspotsGeoJSON> {
+  return lazyLoad(_nfmHotspots, 'NFM Hotspots', async () => {
+    const proj = await getProj4();
+    if (!proj) return EMPTY_FC as NFMHotspotsGeoJSON;
+    return loadNFMHotspots(proj);
+  }, EMPTY_FC as NFMHotspotsGeoJSON);
 }
 
-export function getSchools(): SchoolsGeoJSON {
-  return schoolsGeoJSON;
+export async function getSchools(): Promise<SchoolsGeoJSON> {
+  return lazyLoad(_schools, 'Schools', loadSchools, EMPTY_FC as SchoolsGeoJSON);
 }
 
-export function getHospitals(): HospitalsGeoJSON {
-  return hospitalsGeoJSON;
+export async function getHospitals(): Promise<HospitalsGeoJSON> {
+  return lazyLoad(_hospitals, 'Hospitals', loadHospitals, EMPTY_FC as HospitalsGeoJSON);
 }
 
-export function getBathingWaters(): BathingWatersGeoJSON {
-  return bathingWatersGeoJSON;
+export async function getBathingWaters(): Promise<BathingWatersGeoJSON> {
+  return lazyLoad(_bathingWaters, 'Bathing Waters', loadBathingWaters, EMPTY_FC as BathingWatersGeoJSON);
 }
 
-export function getRamsar(): RamsarGeoJSON {
-  return ramsarGeoJSON;
+export async function getRamsar(): Promise<RamsarGeoJSON> {
+  return lazyLoad(_ramsar, 'Ramsar Wetlands', loadRamsar, EMPTY_FC as RamsarGeoJSON);
 }
 
-export function getWaterCompanyBoundaries(): WaterCompanyBoundariesGeoJSON {
-  return waterCompanyBoundariesGeoJSON;
+export async function getWaterCompanyBoundaries(): Promise<WaterCompanyBoundariesGeoJSON> {
+  return lazyLoad(_waterCompanyBoundaries, 'Water Company Boundaries', loadWaterCompanyBoundaries, EMPTY_FC as WaterCompanyBoundariesGeoJSON);
 }
 
-export function getEDMOverflows(): EDMOverflowsGeoJSON {
-  return edmOverflowsGeoJSON;
+export async function getEDMOverflows(): Promise<EDMOverflowsGeoJSON> {
+  return lazyLoad(_edmOverflows, 'EDM Overflows', loadEDMOverflows, EMPTY_FC as EDMOverflowsGeoJSON);
 }
 
-export function getWINEPOverflows(): WINEPOverflowsGeoJSON {
-  return winepOverflowsGeoJSON;
+export async function getWINEPOverflows(): Promise<WINEPOverflowsGeoJSON> {
+  return lazyLoad(_winepOverflows, 'WINEP Overflows', loadWINEPOverflows, EMPTY_FC as WINEPOverflowsGeoJSON);
 }
 
 export function getDatasetSummary(): DatasetSummary {
@@ -1237,17 +1237,17 @@ export function getDatasetSummary(): DatasetSummary {
       ltlas: propsLTLA.length,
       utlas: propsUTLA.length,
     },
-    floodRiskAreas: { features: floodRiskAreasGeoJSON.features.length },
+    floodRiskAreas: { features: _floodRiskAreas.data?.features.length ?? 0 },
     postcodeRisk: { postcodes: postcodeRiskMap.size },
     propertyRisk: { totalProperties: propertyRiskSummary.totalProperties },
-    wfdCatchments: { features: wfdCatchmentsGeoJSON.features.length },
-    nfmHotspots: { features: nfmHotspotsGeoJSON.features.length },
-    schools: { features: schoolsGeoJSON.features.length },
-    hospitals: { features: hospitalsGeoJSON.features.length },
-    bathingWaters: { features: bathingWatersGeoJSON.features.length },
-    ramsar: { features: ramsarGeoJSON.features.length },
-    waterCompanyBoundaries: { features: waterCompanyBoundariesGeoJSON.features.length },
-    edmOverflows: { features: edmOverflowsGeoJSON.features.length },
-    winepOverflows: { features: winepOverflowsGeoJSON.features.length },
+    wfdCatchments: { features: _wfdCatchments.data?.features.length ?? 0 },
+    nfmHotspots: { features: _nfmHotspots.data?.features.length ?? 0 },
+    schools: { features: _schools.data?.features.length ?? 0 },
+    hospitals: { features: _hospitals.data?.features.length ?? 0 },
+    bathingWaters: { features: _bathingWaters.data?.features.length ?? 0 },
+    ramsar: { features: _ramsar.data?.features.length ?? 0 },
+    waterCompanyBoundaries: { features: _waterCompanyBoundaries.data?.features.length ?? 0 },
+    edmOverflows: { features: _edmOverflows.data?.features.length ?? 0 },
+    winepOverflows: { features: _winepOverflows.data?.features.length ?? 0 },
   };
 }

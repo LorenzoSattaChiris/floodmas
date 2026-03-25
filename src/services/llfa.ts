@@ -6,7 +6,7 @@
  * Merges XLSX info into GeoJSON feature properties for per-LLFA information cards.
  */
 
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import XLSX from 'xlsx';
@@ -16,7 +16,9 @@ import { getDefences, getSpend, getHomesBetterProtected, getPropertiesAtRisk } f
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const LLFA_DIR = join(__dirname, '../dataset/LLFA');
+const LLFA_DIR = existsSync(join(__dirname, '../../src/dataset/LLFA'))
+  ? join(__dirname, '../../src/dataset/LLFA')
+  : join(__dirname, '../dataset/LLFA');
 
 // ── Types ────────────────────────────────────────────────────────────
 

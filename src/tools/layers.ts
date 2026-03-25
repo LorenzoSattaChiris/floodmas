@@ -497,7 +497,7 @@ export const queryFloodRiskAreas: FloodTool = {
   execute: async (args) => {
     const floodSource = (args.flood_source as string) || 'all';
     try {
-      const geoJSON = getFloodRiskAreas();
+      const geoJSON = await getFloodRiskAreas();
       let features = geoJSON.features;
       if (floodSource !== 'all') {
         features = features.filter(f => f.properties.flood_source === floodSource);

@@ -34,9 +34,9 @@ router.get('/summary', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/flood-risk-areas — Defra Flood Risk Areas GeoJSON (WGS84) */
-router.get('/flood-risk-areas', (_req: Request, res: Response) => {
+router.get('/flood-risk-areas', async (_req: Request, res: Response) => {
   try {
-    res.json(getFloodRiskAreas());
+    res.json(await getFloodRiskAreas());
   } catch (err) {
     logger.error({ err }, 'Failed to get flood risk areas');
     res.status(500).json({ error: 'Failed to get flood risk areas' });
@@ -134,9 +134,9 @@ router.get('/properties-risk-summary', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/waterbody-catchments — WFD River Waterbody Catchments Cycle 2 GeoJSON (WGS84) */
-router.get('/waterbody-catchments', (_req: Request, res: Response) => {
+router.get('/waterbody-catchments', async (_req: Request, res: Response) => {
   try {
-    res.json(getWFDCatchments());
+    res.json(await getWFDCatchments());
   } catch (err) {
     logger.error({ err }, 'Failed to get WFD catchments');
     res.status(500).json({ error: 'Failed to get WFD catchments' });
@@ -144,9 +144,9 @@ router.get('/waterbody-catchments', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/nfm-hotspots — NFM Heat Maps / Hotspots GeoJSON (WGS84) */
-router.get('/nfm-hotspots', (_req: Request, res: Response) => {
+router.get('/nfm-hotspots', async (_req: Request, res: Response) => {
   try {
-    res.json(getNFMHotspots());
+    res.json(await getNFMHotspots());
   } catch (err) {
     logger.error({ err }, 'Failed to get NFM hotspots');
     res.status(500).json({ error: 'Failed to get NFM hotspots' });
@@ -154,9 +154,9 @@ router.get('/nfm-hotspots', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/schools — State-funded schools GeoJSON (WGS84 points) */
-router.get('/schools', (_req: Request, res: Response) => {
+router.get('/schools', async (_req: Request, res: Response) => {
   try {
-    res.json(getSchools());
+    res.json(await getSchools());
   } catch (err) {
     logger.error({ err }, 'Failed to get schools data');
     res.status(500).json({ error: 'Failed to get schools data' });
@@ -164,9 +164,9 @@ router.get('/schools', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/hospitals — CQC health/care locations GeoJSON (WGS84 points) */
-router.get('/hospitals', (_req: Request, res: Response) => {
+router.get('/hospitals', async (_req: Request, res: Response) => {
   try {
-    res.json(getHospitals());
+    res.json(await getHospitals());
   } catch (err) {
     logger.error({ err }, 'Failed to get hospitals data');
     res.status(500).json({ error: 'Failed to get hospitals data' });
@@ -174,9 +174,9 @@ router.get('/hospitals', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/bathing-waters — EA Bathing Water Quality GeoJSON (WGS84 points) */
-router.get('/bathing-waters', (_req: Request, res: Response) => {
+router.get('/bathing-waters', async (_req: Request, res: Response) => {
   try {
-    res.json(getBathingWaters());
+    res.json(await getBathingWaters());
   } catch (err) {
     logger.error({ err }, 'Failed to get bathing waters data');
     res.status(500).json({ error: 'Failed to get bathing waters data' });
@@ -184,9 +184,9 @@ router.get('/bathing-waters', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/ramsar — Ramsar Wetlands (England) GeoJSON polygons (WGS84) */
-router.get('/ramsar', (_req: Request, res: Response) => {
+router.get('/ramsar', async (_req: Request, res: Response) => {
   try {
-    res.json(getRamsar());
+    res.json(await getRamsar());
   } catch (err) {
     logger.error({ err }, 'Failed to get Ramsar wetlands data');
     res.status(500).json({ error: 'Failed to get Ramsar wetlands data' });
@@ -194,9 +194,9 @@ router.get('/ramsar', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/water-company-boundaries — Ofwat Water Company Boundaries GeoJSON (WGS84) */
-router.get('/water-company-boundaries', (_req: Request, res: Response) => {
+router.get('/water-company-boundaries', async (_req: Request, res: Response) => {
   try {
-    res.json(getWaterCompanyBoundaries());
+    res.json(await getWaterCompanyBoundaries());
   } catch (err) {
     logger.error({ err }, 'Failed to get water company boundaries data');
     res.status(500).json({ error: 'Failed to get water company boundaries data' });
@@ -204,9 +204,9 @@ router.get('/water-company-boundaries', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/edm-overflows — EDM Storm Overflows 2024 GeoJSON points (WGS84) */
-router.get('/edm-overflows', (_req: Request, res: Response) => {
+router.get('/edm-overflows', async (_req: Request, res: Response) => {
   try {
-    res.json(getEDMOverflows());
+    res.json(await getEDMOverflows());
   } catch (err) {
     logger.error({ err }, 'Failed to get EDM overflows data');
     res.status(500).json({ error: 'Failed to get EDM overflows data' });
@@ -214,9 +214,9 @@ router.get('/edm-overflows', (_req: Request, res: Response) => {
 });
 
 /** GET /api/datasets/winep-overflows — WINEP Storm Overflows Under Investigation GeoJSON points (WGS84) */
-router.get('/winep-overflows', (_req: Request, res: Response) => {
+router.get('/winep-overflows', async (_req: Request, res: Response) => {
   try {
-    res.json(getWINEPOverflows());
+    res.json(await getWINEPOverflows());
   } catch (err) {
     logger.error({ err }, 'Failed to get WINEP overflows data');
     res.status(500).json({ error: 'Failed to get WINEP overflows data' });
