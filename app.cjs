@@ -12,7 +12,12 @@
  *   Document Root               →  /httpdocs/public  (or /httpdocs)
  */
 
+// Ensure Passenger/Plesk always sees production behaviour
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
 import('./dist/index.js').catch(function (err) {
+  // Log to stderr so it appears in Plesk error_log
   console.error('FloodMAS server failed to start:', err);
-  process.exit(1);
+  // Do NOT call process.exit() — let Passenger detect the failure itself.
+  // Exiting prematurely prevents Passenger from writing diagnostic info.
 });

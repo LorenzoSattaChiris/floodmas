@@ -35,7 +35,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+
+// Passenger sets PORT as a string (could be a socket path on some configs).
+// Convert only if it looks numeric; otherwise pass through for socket binding.
+const rawPort = process.env.PORT;
+const PORT: string | number = rawPort && /^\d+$/.test(rawPort) ? Number(rawPort) : rawPort || 3000;
 
 // --- Request logging ---
 app.use(pinoHttp({
@@ -125,11 +129,11 @@ if (existsSync(clientDist)) {
 }
 
 const server = app.listen(PORT, () => {
-  logger.info({ port: PORT }, `🌊 FloodMAS server running on http://localhost:${PORT}`);
+  logger.info({ port: PORT }, `🌊 FloodMAS server running on port/socket ${PORT}`);
 
-  // Defer ALL heavy work (datasets, ML models) to the next event-loop tick.
-  // This ensures Passenger's handshake completes before heavy modules
-  // (TensorFlow.js, proj4, xlsx) are even imported.
+  // Defer ALL heavy work (datasets, ML models) to give Passenger time to
+  // complete its handshake. 2 s is enough for Passenger to verify the
+  // process is alive; only then do we start loading heavy files.
   setTimeout(async () => {
     try {
       // Dynamic-import heavy services so proj4/xlsx load lazily
@@ -137,7 +141,7 @@ const server = app.listen(PORT, () => {
       const { initLLFA } = await import('./services/llfa.js');
       const { initStormOverflows } = await import('./services/storm-overflows.js');
 
-      initDatasets();
+      await initDatasets();
       initLLFA();
       initStormOverflows();
     } catch (err) {
@@ -160,7 +164,7 @@ const server = app.listen(PORT, () => {
     } catch (err) {
       logger.warn({ err }, 'ML model loading failed — tools will use heuristic fallbacks');
     }
-  }, 0);
+  }, 2000);
 });
 
 server.on('error', (err: NodeJS.ErrnoException) => {

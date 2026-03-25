@@ -9,6 +9,7 @@
  */
 
 import { readFileSync } from 'fs';
+import { readFile } from 'fs/promises';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import proj4 from 'proj4';
@@ -556,10 +557,10 @@ function loadFloodRiskAreas(): FloodRiskAreasGeoJSON {
 }
 
 /** Load 269K postcodes into a Map for O(1) lookup + prefix search */
-function loadPostcodeRisk(): void {
+async function loadPostcodeRisk(): Promise<void> {
   const filePath = join(DATASET_DIR, 'floodriskpostcodes', 'RoFRS_Postcodes_AtRisk.csv');
   try {
-    let raw = readFileSync(filePath, 'utf8');
+    let raw = await readFile(filePath, 'utf8');
     // Strip UTF-8 BOM if present
     if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
     const lines = raw.split(/\r?\n/).filter(l => l.trim());
@@ -612,10 +613,10 @@ function loadPostcodeRisk(): void {
 }
 
 /** Stream-aggregate 2.4M properties into a summary (no individual storage) */
-function loadPropertyRiskSummary(): void {
+async function loadPropertyRiskSummary(): Promise<void> {
   const filePath = join(DATASET_DIR, 'floodriskproperties', 'RoFRS_PropertiesAtRisk.csv');
   try {
-    const raw = readFileSync(filePath, 'utf8');
+    const raw = await readFile(filePath, 'utf8');
     const lines = raw.split(/\r?\n/);
     const summary: PropertyRiskSummary = {
       totalProperties: 0,
@@ -1001,7 +1002,7 @@ function loadHospitals(): HospitalsGeoJSON {
 
 // ── Initialization ───────────────────────────────────────────────────
 
-export function initDatasets() {
+export async function initDatasets() {
   try {
     // floodriskmanage CSVs (NAO data)
     defencesRegion = loadDefences('floodriskmanage/Flood-risk-tool-Flood-Defences-by-Region.csv', 'region');
@@ -1019,9 +1020,9 @@ export function initDatasets() {
     // Flood Risk Areas GeoJSON (BNG→WGS84 conversion)
     floodRiskAreasGeoJSON = loadFloodRiskAreas();
 
-    // RoFRS Postcodes & Properties at risk
-    loadPostcodeRisk();
-    loadPropertyRiskSummary();
+    // RoFRS Postcodes & Properties at risk (async — large files)
+    await loadPostcodeRisk();
+    await loadPropertyRiskSummary();
 
     // WFD River Waterbody Catchments (BNG→WGS84 conversion)
     wfdCatchmentsGeoJSON = loadWFDCatchments();
