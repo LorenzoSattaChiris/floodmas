@@ -31,24 +31,6 @@ import imdRouter from './routes/imd.js';
 import stormOverflowsRouter from './routes/storm-overflows.js';
 import { logger } from './logger.js';
 
-// Suppress TensorFlow.js startup banner & initialiser warnings in dev
-if (process.env.NODE_ENV !== 'production') {
-  const _log = console.log.bind(console);
-  const _warn = console.warn.bind(console);
-  const tfNoise = /tensorflow\.js in node|orthogonal initializer is being called|^={10,}$/i;
-  const suppress = (fn: typeof console.log) => (...a: unknown[]) => {
-    if (!tfNoise.test(String(a[0]))) fn(...a);
-  };
-  console.log = suppress(_log);
-  console.warn = suppress(_warn);
-}
-
-import { loadForecastingModel } from './ml/forecasting/model.js';
-import { loadRiskModel } from './ml/risk/model.js';
-import { initDatasets } from './services/datasets.js';
-import { initLLFA } from './services/llfa.js';
-import { initStormOverflows } from './services/storm-overflows.js';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -145,24 +127,39 @@ if (existsSync(clientDist)) {
 const server = app.listen(PORT, () => {
   logger.info({ port: PORT }, `🌊 FloodMAS server running on http://localhost:${PORT}`);
 
-  // Defer heavy dataset loading to the next event-loop tick so the server
-  // can respond to Passenger's health-check / handshake immediately.
-  setTimeout(() => {
-    initDatasets();
-    initLLFA();
-    initStormOverflows();
+  // Defer ALL heavy work (datasets, ML models) to the next event-loop tick.
+  // This ensures Passenger's handshake completes before heavy modules
+  // (TensorFlow.js, proj4, xlsx) are even imported.
+  setTimeout(async () => {
+    try {
+      // Dynamic-import heavy services so proj4/xlsx load lazily
+      const { initDatasets } = await import('./services/datasets.js');
+      const { initLLFA } = await import('./services/llfa.js');
+      const { initStormOverflows } = await import('./services/storm-overflows.js');
 
-    // Load ML models (non-blocking)
-    Promise.allSettled([loadForecastingModel(), loadRiskModel()])
-      .then(([forecastOk, riskOk]) => {
-        logger.info({
-          forecasting: forecastOk.status === 'fulfilled' && forecastOk.value ? 'loaded' : 'heuristic-fallback',
-          risk: riskOk.status === 'fulfilled' && riskOk.value ? 'loaded' : 'heuristic-fallback',
-        }, '🧠 ML models initialised');
-      })
-      .catch((err) => {
-        logger.warn({ err }, 'ML model loading failed — tools will use heuristic fallbacks');
-      });
+      initDatasets();
+      initLLFA();
+      initStormOverflows();
+    } catch (err) {
+      logger.error({ err }, 'Dataset loading failed');
+    }
+
+    try {
+      // Dynamic-import TensorFlow.js models (heaviest dependency)
+      const { loadForecastingModel } = await import('./ml/forecasting/model.js');
+      const { loadRiskModel } = await import('./ml/risk/model.js');
+
+      const [forecastOk, riskOk] = await Promise.allSettled([
+        loadForecastingModel(),
+        loadRiskModel(),
+      ]);
+      logger.info({
+        forecasting: forecastOk.status === 'fulfilled' && forecastOk.value ? 'loaded' : 'heuristic-fallback',
+        risk: riskOk.status === 'fulfilled' && riskOk.value ? 'loaded' : 'heuristic-fallback',
+      }, '🧠 ML models initialised');
+    } catch (err) {
+      logger.warn({ err }, 'ML model loading failed — tools will use heuristic fallbacks');
+    }
   }, 0);
 });
 
