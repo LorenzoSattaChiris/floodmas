@@ -1,0 +1,127 @@
+import { Router, Request, Response } from 'express';
+import {
+  getDefences,
+  getSpend,
+  getHomesBetterProtected,
+  getPropertiesAtRisk,
+  getFloodRiskAreas,
+  getDatasetSummary,
+  getPostcodeRisk,
+  searchPostcodes,
+  getPropertyRiskSummary,
+} from '../services/datasets.js';
+import { logger } from '../logger.js';
+
+const router = Router();
+
+/** GET /api/datasets/summary — aggregate summary of all loaded datasets */
+router.get('/summary', (_req: Request, res: Response) => {
+  try {
+    res.json(getDatasetSummary());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get dataset summary');
+    res.status(500).json({ error: 'Failed to get dataset summary' });
+  }
+});
+
+/** GET /api/datasets/flood-risk-areas — Defra Flood Risk Areas GeoJSON (WGS84) */
+router.get('/flood-risk-areas', (_req: Request, res: Response) => {
+  try {
+    res.json(getFloodRiskAreas());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get flood risk areas');
+    res.status(500).json({ error: 'Failed to get flood risk areas' });
+  }
+});
+
+/** GET /api/datasets/defences?level=region|utla — flood defence statistics */
+router.get('/defences', (req: Request, res: Response) => {
+  try {
+    const level = typeof req.query.level === 'string' ? req.query.level : undefined;
+    res.json(getDefences(level));
+  } catch (err) {
+    logger.error({ err }, 'Failed to get defence statistics');
+    res.status(500).json({ error: 'Failed to get defence statistics' });
+  }
+});
+
+/** GET /api/datasets/spend?level=region|utla — flood spend statistics */
+router.get('/spend', (req: Request, res: Response) => {
+  try {
+    const level = typeof req.query.level === 'string' ? req.query.level : undefined;
+    res.json(getSpend(level));
+  } catch (err) {
+    logger.error({ err }, 'Failed to get spend statistics');
+    res.status(500).json({ error: 'Failed to get spend statistics' });
+  }
+});
+
+/** GET /api/datasets/homes-protected?level=region|utla — homes better protected */
+router.get('/homes-protected', (req: Request, res: Response) => {
+  try {
+    const level = typeof req.query.level === 'string' ? req.query.level : undefined;
+    res.json(getHomesBetterProtected(level));
+  } catch (err) {
+    logger.error({ err }, 'Failed to get homes protected data');
+    res.status(500).json({ error: 'Failed to get homes protected data' });
+  }
+});
+
+/** GET /api/datasets/properties-at-risk?level=constituency|ltla|utla — properties at flood risk */
+router.get('/properties-at-risk', (req: Request, res: Response) => {
+  try {
+    const level = typeof req.query.level === 'string' ? req.query.level : undefined;
+    res.json(getPropertiesAtRisk(level));
+  } catch (err) {
+    logger.error({ err }, 'Failed to get properties at risk data');
+    res.status(500).json({ error: 'Failed to get properties at risk data' });
+  }
+});
+
+/** GET /api/datasets/postcode-risk?pc=SW1A+1AA — lookup flood risk for a single postcode */
+router.get('/postcode-risk', (req: Request, res: Response) => {
+  try {
+    const pc = typeof req.query.pc === 'string' ? req.query.pc : '';
+    if (!pc.trim()) {
+      res.status(400).json({ error: 'Missing required query parameter: pc' });
+      return;
+    }
+    const result = getPostcodeRisk(pc);
+    if (!result) {
+      res.status(404).json({ error: 'Postcode not found in flood risk dataset' });
+      return;
+    }
+    res.json(result);
+  } catch (err) {
+    logger.error({ err }, 'Failed to get postcode risk');
+    res.status(500).json({ error: 'Failed to get postcode risk' });
+  }
+});
+
+/** GET /api/datasets/postcode-risk/search?q=SW1A&limit=20 — search postcodes by prefix */
+router.get('/postcode-risk/search', (req: Request, res: Response) => {
+  try {
+    const q = typeof req.query.q === 'string' ? req.query.q : '';
+    if (!q.trim()) {
+      res.status(400).json({ error: 'Missing required query parameter: q' });
+      return;
+    }
+    const limit = Math.min(Math.max(parseInt(String(req.query.limit || '20'), 10) || 20, 1), 100);
+    res.json(searchPostcodes(q, limit));
+  } catch (err) {
+    logger.error({ err }, 'Failed to search postcodes');
+    res.status(500).json({ error: 'Failed to search postcodes' });
+  }
+});
+
+/** GET /api/datasets/properties-risk-summary — aggregate summary of 2.4M individual properties */
+router.get('/properties-risk-summary', (_req: Request, res: Response) => {
+  try {
+    res.json(getPropertyRiskSummary());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get properties risk summary');
+    res.status(500).json({ error: 'Failed to get properties risk summary' });
+  }
+});
+
+export default router;

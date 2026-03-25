@@ -14,6 +14,11 @@ const TTL = {
   floodAreas: 86400,  // 24 hours
   social: 60,         // 60 seconds
   forecast: 1800,     // 30 min (Open-Meteo weather/discharge)
+  metoffice: 1800,    // 30 min (Met Office Site-Specific forecast)
+  nrfa: 86400,        // 24 hours (NRFA station list is static)
+  cds: 43200,         // 12 hours (ERA5-Land has ~5 day lag, changes very slowly)
+  os: 86400,           // 24 hours (OS Names search results are static)
+  atmospheric: 1800,   // 30 min (Met Office NWP model runs update ~4x/day)
 } as const;
 
 export type CacheKey = keyof typeof TTL;

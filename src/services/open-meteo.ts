@@ -10,7 +10,7 @@ const FLOOD_BASE = 'https://flood-api.open-meteo.com/v1';
  */
 
 // Grid of UK representative points (lat, lon) — ~30 points covering England, Wales, Scotland
-const UK_GRID_POINTS = [
+export const UK_GRID_POINTS = [
   // South England
   { lat: 50.8, lon: -1.1, name: 'Southampton' },
   { lat: 51.0, lon: -3.2, name: 'Taunton' },
@@ -78,7 +78,7 @@ export async function getPrecipitationGrid(): Promise<PrecipitationGrid> {
 
   const res = await fetch(url, {
     headers: { 'Accept': 'application/json' },
-    signal: AbortSignal.timeout(15000),
+    signal: AbortSignal.timeout(30000),
   });
 
   if (!res.ok) {
@@ -202,6 +202,72 @@ export async function getRiverDischarge(
   return result;
 }
 
+// ─── Soil Moisture ──────────────────────────────────────────────────
+
+export interface SoilMoisturePoint {
+  lat: number;
+  lon: number;
+  name: string;
+  moisture_0_7cm: number;   // m³/m³ volumetric water content 0–7 cm
+  moisture_7_28cm: number;  // m³/m³ volumetric water content 7–28 cm
+  temperature_c: number;
+}
+
+export interface SoilMoistureGrid {
+  points: SoilMoisturePoint[];
+  generatedAt: string;
+}
+
+/**
+ * Fetch current soil moisture across UK grid points.
+ * High soil moisture = saturated ground = increased surface-water flood risk.
+ */
+export async function getSoilMoistureGrid(): Promise<SoilMoistureGrid> {
+  const cached = getCached<SoilMoistureGrid>('weather:soil-moisture');
+  if (cached) return cached.data;
+
+  const lats = UK_GRID_POINTS.map(p => p.lat).join(',');
+  const lons = UK_GRID_POINTS.map(p => p.lon).join(',');
+
+  const url = `${METEO_BASE}/forecast?latitude=${lats}&longitude=${lons}&hourly=soil_moisture_0_to_7cm,soil_moisture_7_to_28cm,temperature_2m&forecast_hours=1&timezone=Europe/London`;
+
+  const res = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+    signal: AbortSignal.timeout(30000),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Open-Meteo soil moisture error: ${res.status}`);
+  }
+
+  const data = await res.json();
+  const results: unknown[] = Array.isArray(data) ? data : [data];
+
+  const points: SoilMoisturePoint[] = results.map((r: any, i: number) => {
+    const hourly = r.hourly || {};
+    const sm07: number[] = hourly.soil_moisture_0_to_7cm || [];
+    const sm728: number[] = hourly.soil_moisture_7_to_28cm || [];
+    const temps: number[] = hourly.temperature_2m || [];
+
+    return {
+      lat: UK_GRID_POINTS[i].lat,
+      lon: UK_GRID_POINTS[i].lon,
+      name: UK_GRID_POINTS[i].name,
+      moisture_0_7cm: Math.round((sm07[0] ?? 0) * 1000) / 1000,
+      moisture_7_28cm: Math.round((sm728[0] ?? 0) * 1000) / 1000,
+      temperature_c: Math.round((temps[0] ?? 0) * 10) / 10,
+    };
+  });
+
+  const result: SoilMoistureGrid = {
+    points,
+    generatedAt: new Date().toISOString(),
+  };
+
+  setCache('weather:soil-moisture', result, 'forecast');
+  return result;
+}
+
 /** Health check for Open-Meteo */
 export async function checkOpenMeteoHealth(): Promise<boolean> {
   try {
@@ -212,4 +278,73 @@ export async function checkOpenMeteoHealth(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+// ─── Extended Weather (Snow, Wind Gusts, Pressure) ──────────────────
+
+export interface ExtendedWeatherPoint {
+  lat: number;
+  lon: number;
+  name: string;
+  snow_depth_m: number;
+  wind_gusts_kmh: number;
+  surface_pressure_hpa: number;
+  cloud_cover_pct: number;
+}
+
+export interface ExtendedWeatherGrid {
+  points: ExtendedWeatherPoint[];
+  generatedAt: string;
+}
+
+/**
+ * Fetch extended weather variables across UK grid.
+ * Snow depth, wind gusts, surface pressure, and cloud cover.
+ */
+export async function getExtendedWeatherGrid(): Promise<ExtendedWeatherGrid> {
+  const cached = getCached<ExtendedWeatherGrid>('weather:extended');
+  if (cached) return cached.data;
+
+  const lats = UK_GRID_POINTS.map(p => p.lat).join(',');
+  const lons = UK_GRID_POINTS.map(p => p.lon).join(',');
+
+  const url = `${METEO_BASE}/forecast?latitude=${lats}&longitude=${lons}&hourly=snow_depth,wind_gusts_10m,surface_pressure,cloud_cover&forecast_hours=1&timezone=Europe/London`;
+
+  const res = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+    signal: AbortSignal.timeout(15000),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Open-Meteo extended weather error: ${res.status}`);
+  }
+
+  const data = await res.json();
+  const results: unknown[] = Array.isArray(data) ? data : [data];
+
+  const points: ExtendedWeatherPoint[] = results.map((r: any, i: number) => {
+    const hourly = r.hourly || {};
+    const snow: number[] = hourly.snow_depth || [];
+    const gusts: number[] = hourly.wind_gusts_10m || [];
+    const pressure: number[] = hourly.surface_pressure || [];
+    const cloud: number[] = hourly.cloud_cover || [];
+
+    return {
+      lat: UK_GRID_POINTS[i].lat,
+      lon: UK_GRID_POINTS[i].lon,
+      name: UK_GRID_POINTS[i].name,
+      snow_depth_m: Math.round((snow[0] ?? 0) * 1000) / 1000,
+      wind_gusts_kmh: Math.round((gusts[0] ?? 0) * 10) / 10,
+      surface_pressure_hpa: Math.round((pressure[0] ?? 1013) * 10) / 10,
+      cloud_cover_pct: Math.round(cloud[0] ?? 0),
+    };
+  });
+
+  const result: ExtendedWeatherGrid = {
+    points,
+    generatedAt: new Date().toISOString(),
+  };
+
+  setCache('weather:extended', result, 'forecast');
+  return result;
 }

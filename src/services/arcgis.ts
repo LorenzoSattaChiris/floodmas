@@ -11,7 +11,25 @@ const ARCGIS_ENDPOINTS = {
     'https://services.arcgis.com/JJzESW51TqeY9uat/ArcGIS/rest/services/SpatialFloodDefences/FeatureServer/0',
   historicFloods:
     'https://services.arcgis.com/JJzESW51TqeY9uat/ArcGIS/rest/services/FloodExtents_16_07_24_shapefile/FeatureServer/0',
+  mainRivers:
+    'https://services.arcgis.com/JJzESW51TqeY9uat/ArcGIS/rest/services/Statutory_Main_River_MapLine_unaltered/FeatureServer/0',
 } as const;
+
+/** ArcGIS FeatureServer endpoints for risk polygon layers (replacing broken MapServer tile services). */
+const RISK_LAYER_ENDPOINTS: Record<string, string> = {
+  'risk-rivers-sea':
+    'https://services-eu1.arcgis.com/KB6uNVj5ZcJr7jUP/arcgis/rest/services/RiskOfFloodingFromRiversAndSea/FeatureServer/0',
+  'risk-surface-water':
+    'https://services1.arcgis.com/JZM7qJpmv7vJ0Hzx/arcgis/rest/services/Risk_of_Flooding_from_Surface_Water_Extents/FeatureServer/0',
+  'flood-zone-2':
+    'https://services1.arcgis.com/JZM7qJpmv7vJ0Hzx/arcgis/rest/services/Flood_Map_for_Planning/FeatureServer/2',
+  'flood-zone-3':
+    'https://services1.arcgis.com/JZM7qJpmv7vJ0Hzx/arcgis/rest/services/Flood_Map_for_Planning/FeatureServer/1',
+  'reservoir-dry':
+    'https://services7.arcgis.com/uZqSSlRPLgqdItQE/arcgis/rest/services/Reservoir_Flood_Extents/FeatureServer/1',
+  'reservoir-wet':
+    'https://services7.arcgis.com/uZqSSlRPLgqdItQE/arcgis/rest/services/Reservoir_Flood_Extents/FeatureServer/2',
+};
 
 export interface ArcGISGeoJSON {
   type: 'FeatureCollection';
@@ -31,13 +49,14 @@ async function queryFeatureServer(
   cacheKey: string,
   bbox?: { xmin: number; ymin: number; xmax: number; ymax: number },
   maxRecords = 500,
+  outFields = '*',
 ): Promise<ArcGISGeoJSON> {
   const cached = getCached<ArcGISGeoJSON>(cacheKey);
   if (cached) return cached.data;
 
   const params = new URLSearchParams({
     where: '1=1',
-    outFields: '*',
+    outFields,
     f: 'geojson',
     resultRecordCount: String(maxRecords),
     outSR: '4326',
@@ -56,7 +75,7 @@ async function queryFeatureServer(
   const url = `${endpoint}/query?${params}`;
   const res = await fetch(url, {
     headers: { 'Accept': 'application/json' },
-    signal: AbortSignal.timeout(20000),
+    signal: AbortSignal.timeout(35000),
   });
 
   if (!res.ok) {
@@ -91,5 +110,34 @@ export async function getHistoricFloods(
     `arcgis:historic:${bboxKey}`,
     bbox,
     500,
+  );
+}
+
+/** Statutory main rivers — managed by the Environment Agency (polylines) */
+export async function getMainRivers(
+  bbox?: { xmin: number; ymin: number; xmax: number; ymax: number },
+): Promise<ArcGISGeoJSON> {
+  const bboxKey = bbox ? `${bbox.xmin},${bbox.ymin},${bbox.xmax},${bbox.ymax}` : 'all';
+  return queryFeatureServer(
+    ARCGIS_ENDPOINTS.mainRivers,
+    `arcgis:main-rivers:${bboxKey}`,
+    bbox,
+    2000,
+  );
+}
+
+export async function getRiskLayerFeatures(
+  layer: string,
+  bbox?: { xmin: number; ymin: number; xmax: number; ymax: number },
+): Promise<ArcGISGeoJSON> {
+  const endpoint = RISK_LAYER_ENDPOINTS[layer];
+  if (!endpoint) throw new Error(`Unknown risk layer: ${layer}`);
+  const bboxKey = bbox ? `${bbox.xmin},${bbox.ymin},${bbox.xmax},${bbox.ymax}` : 'all';
+  return queryFeatureServer(
+    endpoint,
+    `arcgis:risk:${layer}:${bboxKey}`,
+    bbox,
+    2000,
+    'OBJECTID', // minimal fields — only geometry needed for polygon rendering
   );
 }

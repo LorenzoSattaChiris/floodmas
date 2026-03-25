@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -6,7 +7,6 @@ import rateLimit from 'express-rate-limit';
 import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import pino from 'pino';
 import pinoHttp from 'pino-http';
 
 import floodsRouter from './routes/floods.js';
@@ -16,7 +16,34 @@ import socialRouter from './routes/social.js';
 import healthRouter from './routes/health.js';
 import weatherRouter from './routes/weather.js';
 import featuresRouter from './routes/features.js';
+import nrfaRouter from './routes/nrfa.js';
+import chatRouter from './routes/chat.js';
+import agentsRouter from './routes/agents.js';
+import proactiveRouter from './routes/proactive.js';
+import reportRouter from './routes/report.js';
+import metofficeRouter from './routes/metoffice.js';
+import cdsRouter from './routes/cds.js';
+import osRouter from './routes/os.js';
+import datasetsRouter from './routes/datasets.js';
+import llfaRouter from './routes/llfa.js';
+import tilesRouter from './routes/tiles.js';
+import imdRouter from './routes/imd.js';
 import { logger } from './logger.js';
+
+// Suppress TensorFlow.js startup banner & initialiser warnings in dev
+if (process.env.NODE_ENV !== 'production') {
+  const _log = console.log.bind(console);
+  const _warn = console.warn.bind(console);
+  const tfNoise = /tensorflow\.js in node|orthogonal initializer is being called|^={10,}$/i;
+  const suppress = (fn: typeof console.log) => (...a: unknown[]) => {
+    if (!tfNoise.test(String(a[0]))) fn(...a);
+  };
+  console.log = suppress(_log);
+  console.warn = suppress(_warn);
+}
+
+import { loadForecastingModel } from './ml/forecasting/model.js';
+import { loadRiskModel } from './ml/risk/model.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +52,23 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 // --- Request logging ---
-app.use(pinoHttp({ logger, autoLogging: { ignore: (req) => req.url === '/favicon.ico' } }));
+app.use(pinoHttp({
+  logger,
+  autoLogging: { ignore: (req) => req.url === '/favicon.ico' },
+  customLogLevel: (_req, res, err) => {
+    if (err || res.statusCode >= 500) return 'error';
+    if (res.statusCode >= 400) return 'warn';
+    return 'info';
+  },
+  customSuccessMessage: (req, res, responseTime) =>
+    `${req.method} ${req.url} ${res.statusCode} (${Math.round(responseTime)}ms)`,
+  customErrorMessage: (req, res, err) =>
+    `${req.method} ${req.url} ${res.statusCode} — ${err.message}`,
+  serializers: {
+    req: () => undefined,
+    res: () => undefined,
+  },
+}));
 
 // --- Security & middleware ---
 app.use(helmet({
@@ -49,6 +92,7 @@ app.use(rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 }));
+app.use(express.json());
 
 // --- Serve server's own static assets (favicon etc.) ---
 app.use(express.static(join(__dirname, '../public')));
@@ -61,6 +105,18 @@ app.use('/api/flood-areas', floodAreasRouter);
 app.use('/api/social', socialRouter);
 app.use('/api/weather', weatherRouter);
 app.use('/api/features', featuresRouter);
+app.use('/api/nrfa', nrfaRouter);
+app.use('/api/chat', chatRouter);
+app.use('/api/agents', agentsRouter);
+app.use('/api/proactive', proactiveRouter);
+app.use('/api/report', reportRouter);
+app.use('/api/metoffice', metofficeRouter);
+app.use('/api/cds', cdsRouter);
+app.use('/api/os', osRouter);
+app.use('/api/datasets', datasetsRouter);
+app.use('/api/llfa', llfaRouter);
+app.use('/api/tiles', tilesRouter);
+app.use('/api/imd', imdRouter);
 
 // --- Serve static client build (only when client/dist exists, e.g. monorepo) ---
 const clientDist = join(__dirname, '../../client/dist');
@@ -81,8 +137,22 @@ if (existsSync(clientDist)) {
   });
 }
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   logger.info({ port: PORT }, `🌊 FloodMAS server running on http://localhost:${PORT}`);
+
+  // Load ML models in background (non-blocking)
+  try {
+    const [forecastOk, riskOk] = await Promise.allSettled([
+      loadForecastingModel(),
+      loadRiskModel(),
+    ]);
+    logger.info({
+      forecasting: forecastOk.status === 'fulfilled' && forecastOk.value ? 'loaded' : 'heuristic-fallback',
+      risk: riskOk.status === 'fulfilled' && riskOk.value ? 'loaded' : 'heuristic-fallback',
+    }, '🧠 ML models initialised');
+  } catch (err) {
+    logger.warn({ err }, 'ML model loading failed — tools will use heuristic fallbacks');
+  }
 });
 
 server.on('error', (err: NodeJS.ErrnoException) => {
