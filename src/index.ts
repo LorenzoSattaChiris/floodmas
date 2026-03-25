@@ -136,6 +136,9 @@ if (existsSync(clientDist)) {
 }
 
 const server = app.listen(PORT, () => {
+  // Prevent zombie connections — 120s is generous for all endpoints
+  server.requestTimeout = 120_000;
+  server.headersTimeout = 30_000;
   logger.info({ port: PORT }, `🌊 FloodMAS server running on port/socket ${PORT}`);
 
   // Defer ALL heavy work (datasets, ML models) to give Passenger time to
@@ -177,15 +180,15 @@ const server = app.listen(PORT, () => {
   }, 2000);
 });
 
+let _portRetries = 0;
 server.on('error', (err: NodeJS.ErrnoException) => {
-  if (err.code === 'EADDRINUSE') {
-    logger.error({ port: PORT }, `❌ Port ${PORT} is already in use. Retrying in 1 s...`);
-    setTimeout(() => {
-      server.close();
-      server.listen(PORT);
-    }, 1000);
+  if (err.code === 'EADDRINUSE' && _portRetries < 3) {
+    _portRetries++;
+    logger.error({ port: PORT, attempt: _portRetries }, `❌ Port ${PORT} in use. Retry ${_portRetries}/3…`);
+    setTimeout(() => { server.close(); server.listen(PORT); }, 1000);
   } else {
-    throw err;
+    logger.fatal({ err }, 'Server error — exiting');
+    process.exit(1);
   }
 });
 
@@ -202,5 +205,14 @@ function shutdown(signal: string) {
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
+
+// --- Crash safety nets — log before dying ---
+process.on('uncaughtException', (err) => {
+  logger.fatal({ err }, '💥 Uncaught exception — process will exit');
+  process.exit(1);
+});
+process.on('unhandledRejection', (reason) => {
+  logger.error({ err: reason }, '⚠️ Unhandled promise rejection');
+});
 
 export default app;

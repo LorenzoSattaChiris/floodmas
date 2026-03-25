@@ -39,11 +39,13 @@ function tileCachePath(prefix: string, style: string, z: string, x: string, y: s
 
 // ── Concurrency limiter for upstream tile fetches ────────────────────
 const TILE_CONCURRENCY = 4;
+const TILE_QUEUE_MAX = 50;
 let _tileActive = 0;
 const _tileQueue: (() => void)[] = [];
 
 function tileAcquire(): Promise<void> {
   if (_tileActive < TILE_CONCURRENCY) { _tileActive++; return Promise.resolve(); }
+  if (_tileQueue.length >= TILE_QUEUE_MAX) return Promise.reject(new Error('Tile queue full'));
   return new Promise<void>(r => _tileQueue.push(r));
 }
 function tileRelease(): void {
@@ -76,7 +78,14 @@ router.get('/os/:style/:z/:x/:y.png', async (req: Request, res: Response) => {
     return;
   } catch { /* cache miss — fetch upstream */ }
 
-  await tileAcquire();
+  try {
+    await tileAcquire();
+  } catch {
+    // Queue full — return transparent fallback, don't hold up the map
+    res.set({ 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=10' });
+    res.send(TRANSPARENT_PNG);
+    return;
+  }
   try {
     // Re-check cache (another request may have populated it while we waited)
     try {
@@ -135,7 +144,13 @@ router.get('/ea/:service/:z/:x/:y', async (req: Request, res: Response) => {
     return;
   } catch { /* cache miss */ }
 
-  await tileAcquire();
+  try {
+    await tileAcquire();
+  } catch {
+    res.set({ 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=10' });
+    res.send(TRANSPARENT_PNG);
+    return;
+  }
   try {
     // Re-check cache
     try {

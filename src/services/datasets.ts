@@ -1107,13 +1107,20 @@ let _semaphoreQueue: (() => void)[] = [];
 let _semaphoreActive = 0;
 const SEMAPHORE_LIMIT = 1;
 
+const SEMAPHORE_TIMEOUT = 60_000; // 60s — don't wait forever for a stuck load
 function semaphoreAcquire(): Promise<void> {
   if (_semaphoreActive < SEMAPHORE_LIMIT) {
     _semaphoreActive++;
     return Promise.resolve();
   }
-  return new Promise<void>(resolve => {
-    _semaphoreQueue.push(resolve);
+  return new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      const idx = _semaphoreQueue.indexOf(entry);
+      if (idx !== -1) _semaphoreQueue.splice(idx, 1);
+      reject(new Error('Semaphore acquire timed out (60s)'));
+    }, SEMAPHORE_TIMEOUT);
+    const entry = () => { clearTimeout(timer); resolve(); };
+    _semaphoreQueue.push(entry);
   });
 }
 

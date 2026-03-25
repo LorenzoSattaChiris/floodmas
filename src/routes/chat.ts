@@ -15,14 +15,19 @@ const router = Router();
 const sessions = new Map<string, ChatSession>();
 
 // ── Periodic cleanup of expired sessions ─────────────────────────────
+const SESSION_HARD_TTL = 10 * 60_000; // 10 min — hard limit even if not done
 setInterval(() => {
   const now = Date.now();
   for (const [id, session] of sessions) {
-    // Only clean up finished sessions with no active listeners
-    if (session.done && session.listeners.size === 0) {
-      if (now - session.createdAt > GUARDRAILS.sessionTtlMs) {
-        sessions.delete(id);
-      }
+    const age = now - session.createdAt;
+    // Hard cleanup: any session older than 10 min (stuck coordinator safety net)
+    if (age > SESSION_HARD_TTL) {
+      sessions.delete(id);
+      continue;
+    }
+    // Soft cleanup: finished sessions with no listeners after TTL
+    if (session.done && session.listeners.size === 0 && age > GUARDRAILS.sessionTtlMs) {
+      sessions.delete(id);
     }
   }
 }, 60_000);
