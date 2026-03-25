@@ -37,7 +37,7 @@ router.get('/', async (req: Request, res: Response) => {
     res.json(data);
   } catch (err) {
     logger.error({ err }, 'Failed to get IMD boundaries');
-    res.status(502).json({ error: 'Failed to fetch IMD data' });
+    res.status(500).json({ error: 'Failed to fetch IMD data' });
   }
 });
 

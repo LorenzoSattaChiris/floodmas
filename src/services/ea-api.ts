@@ -21,6 +21,7 @@ async function fetchEA(path: string, cacheKey: string, category: Parameters<type
 
     const res = await fetch(url, {
       headers: { 'Accept': 'application/json' },
+      signal: AbortSignal.timeout(10000),
     });
 
     if (res.ok) {

@@ -77,12 +77,16 @@ npm start       # Runs dist/index.js
 ```
 server/
 ├── src/
-│   ├── index.ts                  # Express entry — middleware, 17 route mounts, SPA serving
+│   ├── index.ts                  # Express entry — middleware, 19 route mounts, SPA serving
 │   ├── logger.ts                 # Pino structured logger
 │   ├── agents/                   # AI agent system
-│   │   ├── config.ts             # Agent definitions & tool bindings
+│   │   ├── coordinator.ts        # ReAct supervisor loop — delegates to 4 specialists
+│   │   ├── specialists.ts        # ReAct tool-calling loop for each of the 4 worker agents
+│   │   ├── cards.ts              # A2A agent card definitions (5 cards)
+│   │   ├── prompts.ts            # System prompt templates per agent role
+│   │   ├── config.ts             # Model names, token limits, iteration caps, TTLs
 │   │   ├── openai.ts             # OpenAI client wrapper
-│   │   └── types.ts              # Agent message types
+│   │   └── types.ts              # AgentEvent, AgentCard, ChatSession, FloodTool, LlmCallBudget types
 │   ├── config/
 │   │   └── keywords.ts           # Bluesky flood search terms & UK location list
 │   ├── data/                     # Static reference data
@@ -95,24 +99,28 @@ server/
 │   │   ├── floodriskzone/        # GOV.UK Flood Risk Zone — 2 CSV files
 │   │   ├── floodriskpostcodes/   # EA RoFRS Postcodes at Risk — 269K rows
 │   │   ├── floodriskproperties/  # EA RoFRS Properties at Risk — 2.4M rows
+│   │   ├── imd/                  # MHCLG IMD 2019 File 7 CSV — 32,844 LSOAs
 │   │   └── LLFA/                 # LLFA boundaries GeoJSON + LFRMS audit XLSX
-│   ├── ml/                       # Machine learning models
-│   │   ├── forecasting/model.ts  # Flood level forecasting (TensorFlow.js)
-│   │   └── risk/model.ts         # Risk classification model
-│   ├── routes/                   # 17 Express router modules
+│   ├── ml/                       # Machine learning models (TensorFlow.js)
+│   │   ├── forecasting/model.ts  # LSTM-PINN: 48-step water level forecast (auto-regressive, 24 h)
+│   │   ├── forecasting/data-pipeline.ts  # EA + Open-Meteo training data pipeline; online fine-tuning
+│   │   └── risk/model.ts         # GBT-ensemble (Dense network): 5-output risk classification
+│   ├── routes/                   # 19 Express router modules
 │   │   ├── health.ts             # System health check
 │   │   ├── floods.ts             # EA flood warnings
 │   │   ├── stations.ts           # EA monitoring stations + readings
 │   │   ├── flood-areas.ts        # EA flood warning/alert area polygons
 │   │   ├── social.ts             # Unified EA + Bluesky feed
 │   │   ├── weather.ts            # Open-Meteo precipitation, discharge, soil, extended
-│   │   ├── features.ts           # ArcGIS spatial features (defences, historic, rivers)
+│   │   ├── features.ts           # ArcGIS spatial features (defences, historic, rivers, risk polygons)
 │   │   ├── nrfa.ts               # National River Flow Archive stations
 │   │   ├── metoffice.ts          # Met Office Weather DataHub forecast
 │   │   ├── cds.ts                # Copernicus ERA5-Land reanalysis
 │   │   ├── os.ts                 # Ordnance Survey Names API (place search)
 │   │   ├── datasets.ts           # Local dataset statistics (9 endpoints)
 │   │   ├── llfa.ts               # LLFA boundaries + LFRMS strategy info
+│   │   ├── imd.ts                # IMD 2019 deprivation data — bbox query, LSOA lookup, summary
+│   │   ├── tiles.ts              # Tile proxies: OS Maps + EA ArcGIS MapServer (transparent fallback)
 │   │   ├── chat.ts               # AI agent chat (SSE streaming)
 │   │   ├── agents.ts             # A2A agent card metadata
 │   │   ├── proactive.ts          # Proactive flood monitoring scan
@@ -120,16 +128,24 @@ server/
 │   ├── services/                 # Data source clients
 │   │   ├── ea-api.ts             # Environment Agency Flood Monitoring API
 │   │   ├── open-meteo.ts         # Open-Meteo forecast + flood + soil APIs
-│   │   ├── arcgis.ts             # Defra ArcGIS FeatureServer (defences, floods, rivers)
+│   │   ├── arcgis.ts             # Defra + EA ArcGIS FeatureServer (defences, floods, rivers, risk polygons)
 │   │   ├── bluesky.ts            # Bluesky AT Protocol social search
 │   │   ├── feed.ts               # Unified EA + Bluesky feed merge
 │   │   ├── datasets.ts           # Local CSV/GeoJSON loader (5 dataset dirs)
+│   │   ├── imd.ts                # MHCLG IMD 2019 loader (32,844 LSOAs) + ONS geometry join
 │   │   ├── llfa.ts               # LLFA GeoJSON + XLSX merger
+│   │   ├── nrfa.ts               # UKCEH NRFA stations wrapper
+│   │   ├── os.ts                 # OS Names API wrapper with BNG↔WGS84 (proj4)
 │   │   ├── cache.ts              # NodeCache wrapper with typed TTL constants
-│   │   └── ...                   # Met Office, CDS, OS service modules
-│   └── tools/                    # AI agent tool implementations
-│       ├── sensors.ts            # Sensor data tools for agents
-│       └── weather.ts            # Weather data tools for agents
+│   │   ├── metoffice.ts          # Met Office DataHub client
+│   │   └── cds.ts                # Copernicus CDS ERA5-Land client
+│   ├── tools/                    # Agent tool implementations (28 registered tools)
+│   │   ├── registry.ts           # Central ReadonlyMap of all 28 tools; getToolDefinitions() / executeTool()
+│   │   ├── layers.ts             # 14 map-data tools (warnings, stations, risk zones, IMD, atmospheric models)
+│   │   ├── riskData.ts           # 4 risk-analysis tools (zone info, infrastructure, population, ML prediction)
+│   │   ├── emergency.ts          # 4 emergency-response tools (alert, evacuation, resources, escalation)
+│   │   ├── sensors.ts            # Sensor network + anomaly detection tools
+│   │   └── weather.ts            # Weather forecast + river discharge + soil moisture tools
 ├── dist/                         # Compiled output (git-ignored)
 ├── .env.example
 ├── package.json
@@ -211,15 +227,16 @@ All responses are JSON unless noted.
 
 ---
 
-### Spatial Features (Defra ArcGIS)
+### Spatial Features (ArcGIS FeatureServer)
 
 | Method | Path | Description | Cache |
 |--------|------|-------------|-------|
 | `GET` | `/api/features/defences` | Flood defence infrastructure (walls, embankments, barriers) | 24 hours |
 | `GET` | `/api/features/historic-floods` | Recorded historic flood outlines | 24 hours |
 | `GET` | `/api/features/main-rivers` | Statutory main rivers (polylines) | 24 hours |
+| `GET` | `/api/features/risk/:layer` | GeoJSON polygons for one of 6 risk layers (`risk-rivers-sea`, `risk-surface-water`, `flood-zone-2`, `flood-zone-3`, `reservoir-dry`, `reservoir-wet`) | 5 min |
 
-**Query param:** `bbox` (xmin,ymin,xmax,ymax in WGS84, optional).
+**Query param:** `bbox` (xmin,ymin,xmax,ymax in WGS84, required for `risk/:layer`).
 
 ---
 
@@ -228,6 +245,30 @@ All responses are JSON unless noted.
 | Method | Path | Description | Cache |
 |--------|------|-------------|-------|
 | `GET` | `/api/nrfa/stations` | All NRFA gauging stations (~1,500+) | 24 hours |
+
+---
+
+### IMD Deprivation (MHCLG 2019)
+
+| Method | Path | Description | Cache |
+|--------|------|-------------|-------|
+| `GET` | `/api/imd` | LSOA polygons with IMD 2019 scores for a map bbox (joined from ONS FeatureServer) | 5 min |
+| `GET` | `/api/imd/summary` | Aggregate IMD stats (count, mean score/decile distribution) | 1 hour |
+| `GET` | `/api/imd/lsoa/:code` | Single LSOA lookup by code (e.g. `E01000001`) | 1 hour |
+
+**Query params:** `bbox` (xmin,ymin,xmax,ymax in WGS84, required for bbox query); clamped to UK extent.  
+**Fields returned per LSOA:** overall IMD score/rank/decile + 7 domain scores (income, employment, education, health, crime, barriers, living environment) + total population.
+
+---
+
+### Tile Proxies
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/tiles/os/:style/:z/:x/:y.png` | OS Maps raster tile proxy (styles: `Light_3857`, `Road_3857`, `Outdoor_3857`) |
+| `GET` | `/api/tiles/ea/:service/:z/:x/:y` | EA ArcGIS MapServer tile proxy (transparent 1×1 PNG fallback on upstream failure) |
+
+**Requires:** `OS_API_KEY` for OS tiles.
 
 ---
 
@@ -317,8 +358,8 @@ LLFA boundaries are EPSG:4326 (WGS84). Strategy data from the Russell LFRMS audi
 | 1 | **EA Flood Monitoring API** | `environment.data.gov.uk/flood-monitoring` | None | Flood warnings, monitoring stations, readings, flood areas |
 | 2 | **Open-Meteo Forecast** | `api.open-meteo.com` | None | Precipitation, soil moisture, snow, wind, pressure |
 | 3 | **Open-Meteo Flood** | `flood-api.open-meteo.com` | None | River discharge forecasts |
-| 4 | **Defra ArcGIS Online** | `services.arcgis.com` | None | Flood defences, historic outlines, main rivers |
-| 5 | **EA WMS Tile Services** | `environment.data.gov.uk/arcgis/rest/services` | None | Risk rasters (rivers/sea, surface water, zones 2/3, reservoirs) — consumed directly by client |
+| 4 | **Defra / EA ArcGIS Online** | `services.arcgis.com`, `services-eu1.arcgis.com`, `services1.arcgis.com`, `services7.arcgis.com` | None | Flood defences, historic outlines, main rivers; + 6 risk polygon layers (rivers/sea, surface water, flood zones 2/3, reservoir dry/wet) via FeatureServer |
+| 5 | **EA ArcGIS MapServer (tile proxy)** | `environment.data.gov.uk/arcgis/rest/services` | None | Raster tile proxy at `/api/tiles/ea/` — transparent fallback on upstream failure |
 | 6 | **Bluesky AppView** | `api.bsky.app` | None | Public social flood posts via AT Protocol |
 | 7 | **NRFA** | `nrfaapps.ceh.ac.uk` | None | National River Flow Archive gauging stations |
 | 8 | **Met Office DataHub** | `data.hub.api.metoffice.gov.uk` | API key | Official hourly site-specific forecasts |
@@ -367,23 +408,62 @@ Six directories in `server/src/dataset/`, loaded into memory at startup:
 - **Content:** Per-LLFA boundary polygon with embedded strategy quality info: year published, word count, living document status, external consultant usage, stakeholder mention counts (EA, DEFRA, water companies, RFCCs, public), strategy quality grades (A/B/C for clear objectives, SMART objectives, M&E, climate change, surface water, FCERM alignment), and 30+ specific term mention counts (SuDS, NFM, NBS, resilience, climate change, etc.)
 - **Why:** Enables a map layer showing LLFA jurisdictions with comprehensive information cards on click
 
+### 7. `imd/` — MHCLG Indices of Multiple Deprivation 2019
+- **File:** `imd2019.csv` (MHCLG File 7, 32,844 LSOAs)
+- **Processing:** Loaded into a `Map<LSOA11CD, IMDRecord>` at startup for O(1) lookup. Geometry fetched on-demand from ONS Open Geography FeatureServer and merged.
+- **Content:** Per-LSOA: overall IMD score/rank/decile + 7 domain scores/deciles (income, employment, education, health, crime, barriers, living environment) + total population.
+- **Why:** Powers the IMD Deprivation map layer and `query_imd_deprivation` agent tool to identify compound flood+deprivation vulnerability.
+
 ---
 
 ## AI Agent System
 
-The server implements a multi-agent architecture powered by OpenAI:
+The server implements a **ReAct supervisor–specialist** multi-agent architecture powered by OpenAI, operating over Server-Sent Events (SSE).
 
-| Agent | Role | Capabilities |
-|-------|------|-------------|
-| **Supervisor** | Orchestrator | Routes queries to specialist workers, aggregates responses |
-| **Monitoring** | Real-time analysis | Current flood warnings, station readings, live conditions |
-| **Forecasting** | Predictive | Weather forecast interpretation, river discharge trends |
-| **Risk Analysis** | Risk assessment | Risk zone analysis, defence condition evaluation |
-| **Emergency Response** | Situational awareness | Emergency planning, affected area identification |
+### Agents
 
-Agents communicate via a LangGraph-style workflow and stream responses to the client via Server-Sent Events (SSE).
+| Agent | Model | Max iterations | Tools |
+|-------|-------|----------------|-------|
+| **Coordinator** (supervisor) | `gpt-5.4` | 10 | 4 department dispatch tools |
+| **Forecasting** (worker) | `gpt-5.4-mini` | 5 | 7 (weather, discharge, soil, precipitation, LSTM forecast, atmospheric) |
+| **Monitoring** (worker) | `gpt-5.4-mini` | 5 | 5 (sensor network, anomaly detection, live warnings, EA stations, NRFA) |
+| **Risk Analysis** (worker) | `gpt-5.4-mini` | 5 | 8 (flood zone, infrastructure, population, ML risk prediction, warning areas, risk areas, LLFA, IMD) |
+| **Emergency Response** (worker) | `gpt-5.4-mini` | 5 | 7 (alert generation, evacuation, resources, escalation, defences, historic floods, main rivers) |
+
+### ReAct Loop
+
+1. **Coordinator** receives the user query, decides which specialists to invoke (via OpenAI function calling: `forecasting_department`, `monitoring_department`, `risk_analysis_department`, `emergency_response_department`).
+2. Each **specialist** runs its own tool-calling loop (think → act → observe), calling live data tools and returning structured results.
+3. Specialist results are returned to the coordinator as `role: 'tool'` messages.
+4. Coordinator synthesises all findings into a final natural-language response.
+5. A shared **`LlmCallBudget`** (default: 5 LLM calls total, env `MAX_LLM_CALLS`) prevents runaway costs. If exhausted, the coordinator is prompted to synthesise immediately.
+
+All agent events are streamed via SSE using 12 typed `AgentEventType` values (`stream_start`, `query_start`, `agent_start`, `tool_call`, `tool_result`, `llm_call`, `agent_response`, `final_response`, `stream_end`, `error`, etc.).
+
+### A2A Agent Cards
+
+`GET /api/agents` returns 5 A2A-protocol-compliant agent cards (coordinator + 4 workers), each describing model, capabilities, streaming support, and available skills.
 
 **Requires:** `OPENAI_API_KEY` env var.
+
+## ML Models (TensorFlow.js)
+
+Both models are loaded non-blocking at startup via `Promise.allSettled`; server starts and agents degrade to heuristics if loading fails.
+
+### LSTM-PINN — Flood Level Forecasting (`ml/forecasting/model.ts`)
+- **Architecture:** LSTM(64, returnSeqs) → Dropout(0.2) → LSTM(32) → Dense(16, relu) → Dense(1)
+- **Input:** `[48, 5]` tensor — 48 time steps × 5 features (water level, rainfall, discharge, hour sin/cos)
+- **Output:** Next water level (de-normalised); auto-regressive multi-step to 96 steps (24 h, 15-min intervals)
+- **Physics-Informed Loss:** MSE + λ×physicsLoss (λ=0.1); physics term penalises predictions violating mass-conservation continuity
+- **Confidence:** Degrades linearly from 0.95 (step 1) to 0.30 (step 96); `physicsCheck()` validates Manning’s equation consistency
+- **Training:** `data-pipeline.ts` fetches EA readings + Open-Meteo for 10 UK cities; falls back to 64 synthetic flood patterns if < 48 real samples
+
+### GBT-Ensemble — Risk Classification (`ml/risk/model.ts`)
+- **Architecture:** Dense(128, relu, L2) → Dropout(0.3) → Dense(64) → Dropout(0.2) → Dense(32) → Dense(5, sigmoid)
+- **Input:** 15 features (water level %, trend, rainfall 1h/3h/6h, discharge, soil moisture, flood zone, defence condition/age, flood frequency, pop density, drainage capacity, season, discharge delta)
+- **Output:** 5 risk scores in [0,1]: overall, property, infrastructure, life, economic
+- **Thresholds:** overall ≥ 0.75 → CRITICAL, ≥ 0.50 → HIGH, ≥ 0.25 → MODERATE, < 0.25 → LOW
+- **Warmup:** 200 synthetic risk scenarios, 20 epochs; feature importance via gradient-free perturbation
 
 ---
 
@@ -395,7 +475,10 @@ Agents communicate via a LangGraph-style workflow and stream responses to the cl
 |----------|---------|----------|-------------|
 | `PORT` | `3000` | No | HTTP listening port |
 | `NODE_ENV` | `development` | No | `production` enables SPA static serving |
-| `OPENAI_API_KEY` | — | For agents | GPT model for AI agent system |
+| `OPENAI_API_KEY` | — | For agents | GPT models for AI agent system |
+| `SUPERVISOR_MODEL` | `gpt-5.4` | No | Override coordinator model |
+| `AGENT_MODEL` | `gpt-5.4-mini` | No | Override specialist model |
+| `MAX_LLM_CALLS` | `5` | No | Shared LLM call budget per agent session |
 | `METOFFICE_SPOT_KEY` | — | For Met Office | Met Office DataHub site-specific API |
 | `CDS_API_KEY` | — | For CDS | Copernicus Climate Data Store API |
 | `OS_API_KEY` | — | For OS | Ordnance Survey Data Hub API |

@@ -12,9 +12,8 @@ router.get('/', async (req: Request, res: Response) => {
     const data = await ea.getFloodAreas(type);
     res.json(data);
   } catch (err) {
-    console.error('Error fetching flood areas:', err);
     logger.error({ err }, 'Failed to fetch flood areas');
-    res.status(502).json({ error: 'Failed to fetch flood areas' });
+    res.json({ items: [] });
   }
 });
 

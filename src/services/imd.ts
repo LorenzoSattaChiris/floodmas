@@ -207,16 +207,21 @@ async function queryLSOABoundaries(
   });
 
   const url = `${ONS_LSOA_FS}/query?${params}`;
-  const res = await fetch(url, {
-    headers: { Accept: 'application/json' },
-    signal: AbortSignal.timeout(25000),
-  });
-
-  if (!res.ok) {
-    throw new Error(`ONS LSOA FeatureServer error: ${res.status}`);
+  let data: ONSFeatureCollection;
+  try {
+    const res = await fetch(url, {
+      headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) {
+      throw new Error(`ONS LSOA FeatureServer returned ${res.status}`);
+    }
+    data = await res.json() as ONSFeatureCollection;
+  } catch (err) {
+    logger.warn({ err }, 'ONS LSOA FeatureServer unavailable — returning empty IMD layer');
+    return { type: 'FeatureCollection', features: [] };
   }
 
-  const data = await res.json() as ONSFeatureCollection;
   // Cache LSOA boundaries for 24 h (boundaries never change)
   setCache(cacheKey, data, 'floodAreas');
   return data;
