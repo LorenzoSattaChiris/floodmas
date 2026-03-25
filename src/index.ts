@@ -45,6 +45,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 import { loadForecastingModel } from './ml/forecasting/model.js';
 import { loadRiskModel } from './ml/risk/model.js';
+import { initDatasets } from './services/datasets.js';
+import { initLLFA } from './services/llfa.js';
+import { initStormOverflows } from './services/storm-overflows.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -141,6 +144,12 @@ if (existsSync(clientDist)) {
 
 const server = app.listen(PORT, async () => {
   logger.info({ port: PORT }, `🌊 FloodMAS server running on http://localhost:${PORT}`);
+
+  // Load all local datasets in background (non-blocking)
+  // This runs after the server is listening so the client doesn't get ECONNREFUSED
+  initDatasets();
+  initLLFA();
+  initStormOverflows();
 
   // Load ML models in background (non-blocking)
   try {

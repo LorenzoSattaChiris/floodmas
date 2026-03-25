@@ -245,12 +245,10 @@ function loadDetailedRecords(): void {
 
 // ── Initialization ───────────────────────────────────────────────────
 
-function init() {
+export function initStormOverflows() {
   loadSummary();
   loadDetailedRecords();
 }
-
-init();
 
 // ── Public API ───────────────────────────────────────────────────────
 

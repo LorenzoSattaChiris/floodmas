@@ -333,13 +333,11 @@ function loadLLFABoundaries(): LLFAGeoJSON {
 
 // ── Initialization ───────────────────────────────────────────────────
 
-function init() {
+export function initLLFA() {
   // Load XLSX first so we can merge into GeoJSON
   llfaInfoMap = loadLFRMSData();
   llfaGeoJSON = loadLLFABoundaries();
 }
-
-init();
 
 // ── Public API ───────────────────────────────────────────────────────
 

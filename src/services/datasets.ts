@@ -1001,7 +1001,7 @@ function loadHospitals(): HospitalsGeoJSON {
 
 // ── Initialization ───────────────────────────────────────────────────
 
-function init() {
+export function initDatasets() {
   try {
     // floodriskmanage CSVs (NAO data)
     defencesRegion = loadDefences('floodriskmanage/Flood-risk-tool-Flood-Defences-by-Region.csv', 'region');
@@ -1077,8 +1077,6 @@ function init() {
     logger.error({ err }, 'Failed to load local datasets');
   }
 }
-
-init();
 
 // ── Public API ───────────────────────────────────────────────────────
 

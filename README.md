@@ -10,7 +10,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](../LICENSE)
 
 Backend API server for [FloodMAS](https://floodmas.lsattachiris.com) — a real-time UK flood intelligence dashboard.  
-Acts as a secure, caching proxy between the React frontend and 8 external data sources, plus 6 local dataset directories, AI agent orchestration, and ML-based risk forecasting.
+Acts as a secure, caching proxy between the React frontend and 10 external data sources, plus 16 local dataset directories, AI agent orchestration, and ML-based risk forecasting.
 
 </div>
 
@@ -38,7 +38,7 @@ The server has five responsibilities:
 
 1. **Proxy & cache external APIs** — All calls to the Environment Agency, Open-Meteo, Defra ArcGIS, Bluesky, Met Office, Copernicus CDS, NRFA, and Ordnance Survey are proxied and cached in-memory with per-resource TTLs.
 
-2. **Serve local datasets** — Six local dataset directories (flood risk areas, flood management statistics, postcode risk, property risk, flood risk zones, and LLFA boundaries) are loaded into memory at startup and served via dedicated endpoints.
+2. **Serve local datasets** — Sixteen local dataset directories (flood risk areas, flood management statistics, postcode risk, property risk, flood risk zones, LLFA boundaries, IMD deprivation, WFD catchments, NFM hotspots, schools, hospitals, bathing waters, Ramsar wetlands, water company boundaries, EDM storm overflows, and WINEP overflows) are loaded into memory at startup and served via dedicated endpoints.
 
 3. **AI agent orchestration** — A multi-agent system (supervisor + 4 specialist workers) powered by OpenAI handles natural-language flood queries, proactive monitoring scans, and professional report generation via SSE streaming.
 
@@ -320,6 +320,15 @@ All endpoints under `/api/datasets` serve data loaded from local files at startu
 | `GET` | `/api/datasets/postcode-risk` | Flood risk for a single postcode (269K in map) | `floodriskpostcodes/` |
 | `GET` | `/api/datasets/postcode-risk/search` | Prefix search across 269K postcodes | `floodriskpostcodes/` |
 | `GET` | `/api/datasets/properties-risk-summary` | Aggregated summary of 2.4M individual properties | `floodriskproperties/` |
+| `GET` | `/api/datasets/waterbody-catchments` | WFD River Water Body Catchments Cycle 2 GeoJSON (BNG→WGS84, 6,503 polygons) | `floodwaterbody/` |
+| `GET` | `/api/datasets/nfm-hotspots` | Natural Flood Management opportunity hotspot polygons (857 features) | `floodheatmap/` |
+| `GET` | `/api/datasets/schools` | State-funded schools (24,402 geocoded points) | `schools/` |
+| `GET` | `/api/datasets/hospitals` | CQC-registered health & care providers (1,259 geocoded points) | `hospitals/` |
+| `GET` | `/api/datasets/bathing-waters` | EA designated bathing waters with rBWD classification (460 points) | `bathing/` |
+| `GET` | `/api/datasets/ramsar` | Ramsar Convention wetland sites — England (1,291 polygon features) | `ramsar/` |
+| `GET` | `/api/datasets/water-company-boundaries` | Ofwat water company service area boundaries (432 polygons, 27 companies) | `waterboundaries/` |
+| `GET` | `/api/datasets/edm-overflows` | EDM Storm Overflows 2024 discharge points (16,625 points, 11 companies) | `stormoverflow/` |
+| `GET` | `/api/datasets/winep-overflows` | WINEP Storm Overflows Under Investigation (4,320 points, 10 companies) | `currentstormoverflow/` |
 
 **Query params:** `level` (region/utla/ltla/constituency), `pc` (postcode), `q` (prefix), `limit`.
 
@@ -372,7 +381,7 @@ Sources 1–7 are free public APIs requiring no keys. Sources 8–10 require opt
 
 ## Local Datasets
 
-Six directories in `server/src/dataset/`, loaded into memory at startup:
+Sixteen directories in `server/src/dataset/`, loaded into memory at startup:
 
 ### 1. `floodriskareas/` — Defra Flood Risk Areas
 - **File:** `Flood_Risk_Areas.geojson` (44 MB, EPSG:27700)
@@ -414,6 +423,57 @@ Six directories in `server/src/dataset/`, loaded into memory at startup:
 - **Content:** Per-LSOA: overall IMD score/rank/decile + 7 domain scores/deciles (income, employment, education, health, crime, barriers, living environment) + total population.
 - **Why:** Powers the IMD Deprivation map layer and `query_imd_deprivation` agent tool to identify compound flood+deprivation vulnerability.
 
+### 8. `floodwaterbody/` — WFD River Water Body Catchments
+- **File:** `WFD_River_Water_Body_Catchments_Cycle_2.geojson` (242 MB, EPSG:27700)
+- **Processing:** Coordinates converted from BNG to WGS84 via proj4; loaded into memory at startup
+- **Content:** 6,503 Cycle 2 river water body catchment polygons
+- **Why:** Shows WFD management unit boundaries for water quality and flood risk context
+
+### 9. `floodheatmap/` — NFM Hotspots
+- **File:** `NFM_Hotspots.geojson` (WGS84)
+- **Content:** 857 natural flood management opportunity hotspot polygons
+- **Why:** Highlights areas with high potential for NFM interventions (leaky dams, woodland planting, etc.)
+
+### 10. `schools/` — State-Funded Schools (DfE Edubase)
+- **File:** `edubaseallstatefunded20260325.csv` + `postcode-coords.json` (geocoded)
+- **Processing:** CSV parsed, postcodes geocoded to lat/lon via external lookup
+- **Content:** 24,402 state-funded schools with name, type, phase, local authority, and coordinates
+- **Why:** Vulnerability mapping — identifies schools in flood-risk areas
+
+### 11. `hospitals/` — Health & Care Providers (CQC)
+- **File:** `18_March_2026_CQC_directory.csv` + `postcode-coords.json` (geocoded)
+- **Processing:** CSV parsed (skipping CQC preamble rows), postcodes geocoded
+- **Content:** 1,259 hospitals and care providers with name, type, rating, local authority, and coordinates
+- **Why:** Vulnerability mapping — identifies healthcare facilities in flood-risk areas
+
+### 12. `bathing/` — EA Bathing Water Quality
+- **Files:** `site.csv`, `classifications.csv`, `samples.csv`, `prf.csv`, `as.csv`
+- **Processing:** Multiple CSVs joined by bathing water ID; latest rBWD classification extracted
+- **Content:** 460 designated bathing waters with coordinates and quality classification (Excellent/Good/Sufficient/Poor)
+- **Why:** Environmental quality layer — shows EA-designated bathing water monitoring points
+
+### 13. `ramsar/` — Ramsar Wetlands (England)
+- **File:** `Ramsar_England_7440752995595243115.geojson` (60 MB, WGS84)
+- **Content:** 1,291 polygon features across 73 Ramsar Convention wetland sites
+- **Why:** Conservation overlay — internationally important wetlands sensitive to flooding and water management
+
+### 14. `waterboundaries/` — Ofwat Water Company Boundaries
+- **File:** `UC2_263904301232770618.geojson` (WGS84)
+- **Content:** 432 water company service area boundary polygons covering 27 companies
+- **Why:** Shows regulatory water company jurisdictions for sewerage and water supply context
+
+### 15. `stormoverflow/` — EDM Storm Overflows 2024
+- **File:** `Storm_Overflow_EDM_Annual_Returns_2024_-*.geojson` (27 MB, WGS84)
+- **Source:** EA / Rivers Trust / CaBA Data Hub
+- **Content:** 16,625 monitored storm overflow discharge points from 11 water companies — spill counts, duration, treatment type
+- **Why:** Environmental pollution layer — shows how often and how long each CSO discharged in 2024
+
+### 16. `currentstormoverflow/` — WINEP Storm Overflows Under Investigation
+- **File:** `Water_Company_Sewer_Storm_Overflow_Under_Investigation.geojson` (10 MB, WGS84)
+- **Source:** EA / Rivers Trust / CaBA Data Hub (WINEP v3)
+- **Content:** 4,320 intermittent discharge sites under investigation from 10 water companies — action type (Investigation/Monitoring/Implementation/No Deterioration), water body, certainty
+- **Why:** Shows planned sewer overflow remediation sites from the Water Industry National Environment Programme
+
 ---
 
 ## AI Agent System
@@ -427,7 +487,7 @@ The server implements a **ReAct supervisor–specialist** multi-agent architectu
 | **Coordinator** (supervisor) | `gpt-5.4` | 10 | 4 department dispatch tools |
 | **Forecasting** (worker) | `gpt-5.4-mini` | 5 | 7 (weather, discharge, soil, precipitation, LSTM forecast, atmospheric) |
 | **Monitoring** (worker) | `gpt-5.4-mini` | 5 | 5 (sensor network, anomaly detection, live warnings, EA stations, NRFA) |
-| **Risk Analysis** (worker) | `gpt-5.4-mini` | 5 | 8 (flood zone, infrastructure, population, ML risk prediction, warning areas, risk areas, LLFA, IMD) |
+| **Risk Analysis** (worker) | `gpt-5.4-mini` | 5 | 17 (flood zone, infrastructure, population, ML risk, warning areas, risk areas, LLFA, IMD, WFD catchments, NFM hotspots, storm overflows, schools, hospitals, bathing waters, Ramsar, water company boundaries, EDM overflows, WINEP overflows) |
 | **Emergency Response** (worker) | `gpt-5.4-mini` | 5 | 7 (alert generation, evacuation, resources, escalation, defences, historic floods, main rivers) |
 
 ### ReAct Loop
