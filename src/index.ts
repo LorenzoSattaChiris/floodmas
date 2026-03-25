@@ -142,28 +142,28 @@ if (existsSync(clientDist)) {
   });
 }
 
-const server = app.listen(PORT, async () => {
+const server = app.listen(PORT, () => {
   logger.info({ port: PORT }, `🌊 FloodMAS server running on http://localhost:${PORT}`);
 
-  // Load all local datasets in background (non-blocking)
-  // This runs after the server is listening so the client doesn't get ECONNREFUSED
-  initDatasets();
-  initLLFA();
-  initStormOverflows();
+  // Defer heavy dataset loading to the next event-loop tick so the server
+  // can respond to Passenger's health-check / handshake immediately.
+  setTimeout(() => {
+    initDatasets();
+    initLLFA();
+    initStormOverflows();
 
-  // Load ML models in background (non-blocking)
-  try {
-    const [forecastOk, riskOk] = await Promise.allSettled([
-      loadForecastingModel(),
-      loadRiskModel(),
-    ]);
-    logger.info({
-      forecasting: forecastOk.status === 'fulfilled' && forecastOk.value ? 'loaded' : 'heuristic-fallback',
-      risk: riskOk.status === 'fulfilled' && riskOk.value ? 'loaded' : 'heuristic-fallback',
-    }, '🧠 ML models initialised');
-  } catch (err) {
-    logger.warn({ err }, 'ML model loading failed — tools will use heuristic fallbacks');
-  }
+    // Load ML models (non-blocking)
+    Promise.allSettled([loadForecastingModel(), loadRiskModel()])
+      .then(([forecastOk, riskOk]) => {
+        logger.info({
+          forecasting: forecastOk.status === 'fulfilled' && forecastOk.value ? 'loaded' : 'heuristic-fallback',
+          risk: riskOk.status === 'fulfilled' && riskOk.value ? 'loaded' : 'heuristic-fallback',
+        }, '🧠 ML models initialised');
+      })
+      .catch((err) => {
+        logger.warn({ err }, 'ML model loading failed — tools will use heuristic fallbacks');
+      });
+  }, 0);
 });
 
 server.on('error', (err: NodeJS.ErrnoException) => {
