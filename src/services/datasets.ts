@@ -8,17 +8,23 @@
  *   - floodriskproperties/ (EA RoFRS properties at risk — 2.4M aggregated)
  */
 
-import { readFileSync } from 'fs';
-import { readFile } from 'fs/promises';
+import { readFileSync, existsSync, createReadStream } from 'fs';
+import { createInterface } from 'readline';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import proj4 from 'proj4';
 import { logger } from '../logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const DATASET_DIR = join(__dirname, '../dataset');
+
+/** Yield to the event loop — lets GC run and keeps Passenger alive */
+const tick = () => new Promise<void>(r => setImmediate(r));
+
+/** proj4 converter function type */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Proj4Fn = (...args: any[]) => any;
 
 // British National Grid projection (EPSG:27700)
 const BNG =
@@ -374,6 +380,11 @@ export interface DatasetSummary {
   winepOverflows: { features: number };
 }
 
+// ── Readiness flag ────────────────────────────────────────────────────
+
+let _datasetsReady = false;
+export function isDatasetsReady(): boolean { return _datasetsReady; }
+
 // ── In-Memory Cache (loaded once at startup) ─────────────────────────
 
 let defencesRegion: DefenceStats[] = [];
@@ -514,25 +525,26 @@ function loadPropertiesAtRisk(file: string, level: PropertiesAtRisk['level']): P
 }
 
 /** Convert all coordinates in a GeoJSON polygon ring from BNG to WGS84 */
-function convertRing(ring: number[][]): number[][] {
+function convertRing(ring: number[][], proj: Proj4Fn): number[][] {
   return ring.map(coord => {
-    const [lon, lat] = proj4(BNG, WGS84, [coord[0], coord[1]]);
+    const [lon, lat] = proj(BNG, WGS84, [coord[0], coord[1]]);
     return [lon, lat];
   });
 }
 
-function loadFloodRiskAreas(): FloodRiskAreasGeoJSON {
+function loadFloodRiskAreas(proj: Proj4Fn): FloodRiskAreasGeoJSON {
   const filePath = join(DATASET_DIR, 'floodriskareas', 'Flood_Risk_Areas.geojson');
   try {
+    if (!existsSync(filePath)) { logger.warn('Flood Risk Areas file not found'); return { type: 'FeatureCollection', features: [] }; }
     const raw = readFileSync(filePath, 'utf8');
     const geojson = JSON.parse(raw);
     const features: FloodRiskAreaFeature[] = (geojson.features || []).map((f: any) => {
       let coordinates: number[][][];
       if (f.geometry.type === 'Polygon') {
-        coordinates = f.geometry.coordinates.map((ring: number[][]) => convertRing(ring));
+        coordinates = f.geometry.coordinates.map((ring: number[][]) => convertRing(ring, proj));
       } else if (f.geometry.type === 'MultiPolygon') {
         coordinates = f.geometry.coordinates.map((polygon: number[][][]) =>
-          polygon.map((ring: number[][]) => convertRing(ring))
+          polygon.map((ring: number[][]) => convertRing(ring, proj))
         );
       } else {
         coordinates = f.geometry.coordinates;
@@ -556,19 +568,17 @@ function loadFloodRiskAreas(): FloodRiskAreasGeoJSON {
   }
 }
 
-/** Load 269K postcodes into a Map for O(1) lookup + prefix search */
+/** Load 269K postcodes into a Map for O(1) lookup + prefix search — streamed line by line */
 async function loadPostcodeRisk(): Promise<void> {
   const filePath = join(DATASET_DIR, 'floodriskpostcodes', 'RoFRS_Postcodes_AtRisk.csv');
+  if (!existsSync(filePath)) { logger.warn('RoFRS postcodes file not found'); return; }
   try {
-    let raw = await readFile(filePath, 'utf8');
-    // Strip UTF-8 BOM if present
-    if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
-    const lines = raw.split(/\r?\n/).filter(l => l.trim());
-    if (lines.length < 2) return;
-
     const map = new Map<string, PostcodeRisk>();
-    for (let i = 1; i < lines.length; i++) {
-      const cols = lines[i].split(',');
+    const rl = createInterface({ input: createReadStream(filePath, 'utf8'), crlfDelay: Infinity });
+    let header = true;
+    for await (const line of rl) {
+      if (header) { header = false; continue; }
+      const cols = line.split(',');
       if (cols.length < 21) continue;
       const pc = cols[0].trim().toUpperCase();
       if (!pc) continue;
@@ -615,9 +625,8 @@ async function loadPostcodeRisk(): Promise<void> {
 /** Stream-aggregate 2.4M properties into a summary (no individual storage) */
 async function loadPropertyRiskSummary(): Promise<void> {
   const filePath = join(DATASET_DIR, 'floodriskproperties', 'RoFRS_PropertiesAtRisk.csv');
+  if (!existsSync(filePath)) { logger.warn('RoFRS properties file not found'); return; }
   try {
-    const raw = await readFile(filePath, 'utf8');
-    const lines = raw.split(/\r?\n/);
     const summary: PropertyRiskSummary = {
       totalProperties: 0,
       byType: { residential: 0, nonResidential: 0, unclassified: 0 },
@@ -625,8 +634,10 @@ async function loadPropertyRiskSummary(): Promise<void> {
       byTypeAndRisk: {},
     };
 
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i];
+    const rl = createInterface({ input: createReadStream(filePath, 'utf8'), crlfDelay: Infinity });
+    let header = true;
+    for await (const line of rl) {
+      if (header) { header = false; continue; }
       if (!line) continue;
       // Columns: UPRN,TOPO_TOID,PROPERTY_TYPE,RISK_BAND
       const lastTwo = line.lastIndexOf(',');
@@ -662,14 +673,14 @@ async function loadPropertyRiskSummary(): Promise<void> {
 }
 
 /** Convert a BNG GeoJSON feature collection to WGS84 (handles Polygon + MultiPolygon) */
-function convertGeoJSONToWGS84(geojson: any): any[] {
+function convertGeoJSONToWGS84(geojson: any, proj: Proj4Fn): any[] {
   return (geojson.features || []).map((f: any) => {
     let coordinates: any;
     if (f.geometry.type === 'Polygon') {
-      coordinates = f.geometry.coordinates.map((ring: number[][]) => convertRing(ring));
+      coordinates = f.geometry.coordinates.map((ring: number[][]) => convertRing(ring, proj));
     } else if (f.geometry.type === 'MultiPolygon') {
       coordinates = f.geometry.coordinates.map((polygon: number[][][]) =>
-        polygon.map((ring: number[][]) => convertRing(ring)),
+        polygon.map((ring: number[][]) => convertRing(ring, proj)),
       );
     } else {
       coordinates = f.geometry.coordinates;
@@ -682,12 +693,13 @@ function convertGeoJSONToWGS84(geojson: any): any[] {
   });
 }
 
-function loadWFDCatchments(): WFDCatchmentsGeoJSON {
+function loadWFDCatchments(proj: Proj4Fn): WFDCatchmentsGeoJSON {
   const filePath = join(DATASET_DIR, 'floodwaterbody', 'WFD_River_Water_Body_Catchments_Cycle_2.geojson');
+  if (!existsSync(filePath)) { logger.warn('WFD Catchments file not found (254MB — deploy manually)'); return { type: 'FeatureCollection', features: [] }; }
   try {
     const raw = readFileSync(filePath, 'utf8');
     const geojson = JSON.parse(raw);
-    const converted = convertGeoJSONToWGS84(geojson);
+    const converted = convertGeoJSONToWGS84(geojson, proj);
     const features: WFDCatchmentFeature[] = converted.map((f: any) => ({
       type: 'Feature' as const,
       geometry: f.geometry,
@@ -709,12 +721,13 @@ function loadWFDCatchments(): WFDCatchmentsGeoJSON {
   }
 }
 
-function loadNFMHotspots(): NFMHotspotsGeoJSON {
+function loadNFMHotspots(proj: Proj4Fn): NFMHotspotsGeoJSON {
   const filePath = join(DATASET_DIR, 'floodheatmap', 'NFM_Hotspots.geojson');
+  if (!existsSync(filePath)) { logger.warn('NFM Hotspots file not found'); return { type: 'FeatureCollection', features: [] }; }
   try {
     const raw = readFileSync(filePath, 'utf8');
     const geojson = JSON.parse(raw);
-    const converted = convertGeoJSONToWGS84(geojson);
+    const converted = convertGeoJSONToWGS84(geojson, proj);
     const features: NFMHotspotFeature[] = converted.map((f: any) => ({
       type: 'Feature' as const,
       geometry: f.geometry,
@@ -1002,7 +1015,8 @@ function loadHospitals(): HospitalsGeoJSON {
 
 // ── Initialization ───────────────────────────────────────────────────
 
-export async function initDatasets() {
+/** Phase 1: lightweight CSVs — fast, small files the agent system needs */
+export function initDatasetsCore() {
   try {
     // floodriskmanage CSVs (NAO data)
     defencesRegion = loadDefences('floodriskmanage/Flood-risk-tool-Flood-Defences-by-Region.csv', 'region');
@@ -1012,44 +1026,10 @@ export async function initDatasets() {
     homesRegion = loadHomes('floodriskmanage/Flood-risk-tool-Homes-Better-Protected-by-Region.csv', 'region');
     homesUTLA = loadHomes('floodriskmanage/Flood-risk-tool-Homes-Better-Protected-by-Upper-Tier-Local-Authority.csv', 'utla');
 
-    // floodriskmanage + floodriskzone — Properties at Risk (use floodriskmanage as it has more granularity)
+    // floodriskmanage — Properties at Risk summaries
     propsConstituency = loadPropertiesAtRisk('floodriskmanage/Flood-risk-tool-Properties-at-Risk-by-Constituency.csv', 'constituency');
     propsLTLA = loadPropertiesAtRisk('floodriskmanage/Flood-risk-tool-Properties-at-Risk-by-Lower-Tier-Local-Authority.csv', 'ltla');
     propsUTLA = loadPropertiesAtRisk('floodriskmanage/Flood-risk-tool-Properties-at-Risk-by-Upper-Tier-Local-Authority.csv', 'utla');
-
-    // Flood Risk Areas GeoJSON (BNG→WGS84 conversion)
-    floodRiskAreasGeoJSON = loadFloodRiskAreas();
-
-    // RoFRS Postcodes & Properties at risk (async — large files)
-    await loadPostcodeRisk();
-    await loadPropertyRiskSummary();
-
-    // WFD River Waterbody Catchments (BNG→WGS84 conversion)
-    wfdCatchmentsGeoJSON = loadWFDCatchments();
-
-    // NFM Heat Maps / Hotspots (BNG→WGS84 conversion)
-    nfmHotspotsGeoJSON = loadNFMHotspots();
-
-    // State-funded schools (postcode→WGS84 geocoded)
-    schoolsGeoJSON = loadSchools();
-
-    // CQC health/care locations (postcode→WGS84 geocoded)
-    hospitalsGeoJSON = loadHospitals();
-
-    // Bathing water quality sites (lat/long from EA data)
-    bathingWatersGeoJSON = loadBathingWaters();
-
-    // Ramsar Wetlands — internationally important wetland polygons (already WGS84)
-    ramsarGeoJSON = loadRamsar();
-
-    // Water Company Boundaries — Ofwat regulatory boundaries (already WGS84)
-    waterCompanyBoundariesGeoJSON = loadWaterCompanyBoundaries();
-
-    // EDM Storm Overflows 2024 — point layer (already WGS84)
-    edmOverflowsGeoJSON = loadEDMOverflows();
-
-    // WINEP Storm Overflows Under Investigation — point layer (already WGS84)
-    winepOverflowsGeoJSON = loadWINEPOverflows();
 
     logger.info({
       defencesRegion: defencesRegion.length,
@@ -1061,22 +1041,88 @@ export async function initDatasets() {
       propsConstituency: propsConstituency.length,
       propsLTLA: propsLTLA.length,
       propsUTLA: propsUTLA.length,
-      floodRiskAreas: floodRiskAreasGeoJSON.features.length,
-      postcodes: postcodeRiskMap.size,
-      propertiesTotal: propertyRiskSummary.totalProperties,
-      wfdCatchments: wfdCatchmentsGeoJSON.features.length,
-      nfmHotspots: nfmHotspotsGeoJSON.features.length,
-      schools: schoolsGeoJSON.features.length,
-      hospitals: hospitalsGeoJSON.features.length,
-      bathingWaters: bathingWatersGeoJSON.features.length,
-      ramsar: ramsarGeoJSON.features.length,
-      waterCompanyBoundaries: waterCompanyBoundariesGeoJSON.features.length,
-      edmOverflows: edmOverflowsGeoJSON.features.length,
-      winepOverflows: winepOverflowsGeoJSON.features.length,
-    }, 'All local datasets loaded successfully');
+    }, '📊 Phase 1 datasets loaded (core CSVs)');
   } catch (err) {
-    logger.error({ err }, 'Failed to load local datasets');
+    logger.error({ err }, 'Failed to load Phase 1 datasets');
   }
+}
+
+/** Phase 2: heavy GeoJSON + large CSVs — loaded one at a time with event-loop yields */
+export async function initDatasetsHeavy() {
+  const mem = () => Math.round(process.memoryUsage.rss() / 1024 / 1024);
+  logger.info({ rss: mem() }, '📊 Phase 2 starting — loading heavy datasets one by one');
+
+  // Load proj4 once for all BNG→WGS84 conversions
+  let proj: Proj4Fn | undefined;
+  try {
+    proj = (await import('proj4')).default;
+  } catch (err) {
+    logger.error({ err }, 'Failed to load proj4 — BNG datasets will be skipped');
+  }
+
+  // Helper: load a single dataset with isolated error handling + GC yield
+  async function step<T>(name: string, fn: () => T | Promise<T>): Promise<T | null> {
+    try {
+      const result = await fn();
+      await tick(); // yield to event loop — lets GC run, keeps Passenger alive
+      logger.info({ rss: mem() }, `  ✓ ${name}`);
+      return result;
+    } catch (err) {
+      logger.error({ err }, `  ✗ ${name} failed`);
+      return null;
+    }
+  }
+
+  // --- Each dataset loaded independently ---
+
+  if (proj) {
+    const fra = await step('Flood Risk Areas (44MB, BNG→WGS84)', () => loadFloodRiskAreas(proj!));
+    if (fra) floodRiskAreasGeoJSON = fra;
+  }
+
+  await step('Postcodes at Risk (269K rows, streamed)', () => loadPostcodeRisk());
+  await step('Property Risk Summary (2.4M rows, streamed)', () => loadPropertyRiskSummary());
+
+  // WFD Catchments — 254MB, gitignored, only present if manually deployed
+  if (proj) {
+    const wfd = await step('WFD River Catchments (254MB, BNG→WGS84)', () => loadWFDCatchments(proj!));
+    if (wfd) wfdCatchmentsGeoJSON = wfd;
+  }
+
+  if (proj) {
+    const nfm = await step('NFM Hotspots (BNG→WGS84)', () => loadNFMHotspots(proj!));
+    if (nfm) nfmHotspotsGeoJSON = nfm;
+  }
+
+  const sch = await step('Schools (9MB CSV + geocode)', () => loadSchools());
+  if (sch) schoolsGeoJSON = sch;
+
+  const hosp = await step('Hospitals (19MB CSV + geocode)', () => loadHospitals());
+  if (hosp) hospitalsGeoJSON = hosp;
+
+  const bath = await step('Bathing Waters', () => loadBathingWaters());
+  if (bath) bathingWatersGeoJSON = bath;
+
+  const ram = await step('Ramsar Wetlands (63MB)', () => loadRamsar());
+  if (ram) ramsarGeoJSON = ram;
+
+  const wc = await step('Water Company Boundaries (44MB)', () => loadWaterCompanyBoundaries());
+  if (wc) waterCompanyBoundariesGeoJSON = wc;
+
+  const edm = await step('EDM Storm Overflows (28MB)', () => loadEDMOverflows());
+  if (edm) edmOverflowsGeoJSON = edm;
+
+  const winep = await step('WINEP Storm Overflows (10MB)', () => loadWINEPOverflows());
+  if (winep) winepOverflowsGeoJSON = winep;
+
+  _datasetsReady = true;
+  logger.info({ rss: mem() }, '📊 Phase 2 complete — all heavy datasets processed');
+}
+
+/** @deprecated Use initDatasetsCore() + initDatasetsHeavy() instead */
+export async function initDatasets() {
+  initDatasetsCore();
+  await initDatasetsHeavy();
 }
 
 // ── Public API ───────────────────────────────────────────────────────

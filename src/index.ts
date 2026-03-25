@@ -136,14 +136,17 @@ const server = app.listen(PORT, () => {
   // process is alive; only then do we start loading heavy files.
   setTimeout(async () => {
     try {
-      // Dynamic-import heavy services so proj4/xlsx load lazily
-      const { initDatasets } = await import('./services/datasets.js');
+      // Phase 1: lightweight CSVs — fast, needed by agent system
+      const { initDatasetsCore, initDatasetsHeavy } = await import('./services/datasets.js');
       const { initLLFA } = await import('./services/llfa.js');
       const { initStormOverflows } = await import('./services/storm-overflows.js');
 
-      await initDatasets();
+      initDatasetsCore();
       initLLFA();
       initStormOverflows();
+
+      // Phase 2: heavy GeoJSON, 269K postcodes, 2.4M properties — background
+      await initDatasetsHeavy();
     } catch (err) {
       logger.error({ err }, 'Dataset loading failed');
     }
