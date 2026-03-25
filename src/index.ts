@@ -28,6 +28,7 @@ import datasetsRouter from './routes/datasets.js';
 import llfaRouter from './routes/llfa.js';
 import tilesRouter from './routes/tiles.js';
 import imdRouter from './routes/imd.js';
+import stormOverflowsRouter from './routes/storm-overflows.js';
 import { logger } from './logger.js';
 
 // Suppress TensorFlow.js startup banner & initialiser warnings in dev
@@ -117,6 +118,7 @@ app.use('/api/datasets', datasetsRouter);
 app.use('/api/llfa', llfaRouter);
 app.use('/api/tiles', tilesRouter);
 app.use('/api/imd', imdRouter);
+app.use('/api/storm-overflows', stormOverflowsRouter);
 
 // --- Serve static client build (only when client/dist exists, e.g. monorepo) ---
 const clientDist = join(__dirname, '../../client/dist');

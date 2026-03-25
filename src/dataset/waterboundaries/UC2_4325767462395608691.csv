@@ -1,0 +1,433 @@
+﻿FID,AreaServed,ID,COMPANY,Acronym,CoType,AreaType,WARNINGS,Shape__Area,Shape__Length
+1,Hafren Dyfrdwy,8,Hafren Dyfrdwy,HDD,regional water and sewerage company,Whole water supply area, ,2854802700.66678,521082.591184918
+2,Severn Trent,15,Severn Trent Water,SVE,regional water and sewerage company,Part of water supply area, ,17507096742.7535,1803302.74679651
+3,Wessex,35,Wessex Water,WSX,regional water and sewerage company,Whole water supply area, ,7345820238.97378,1110354.4154324
+4,Medway,27,Southern Water,SRN,regional water and sewerage company,Part of water supply area, ,451947707.035866,568880.124864193
+5,Bristol,6,South West Water,SWB,regional water only company,Whole water supply area, ,2391188450.3462,438539.718201126
+6,Guildford,31,Thames Water,TMS,regional water and sewerage company,Part of water supply area, ,371429340.15435,119249.97568103
+7,Suffolk,11,Northumbrian Water,NES,regional water and sewerage company,Part of water supply area, ,1345943150.09052,360560.142882985
+8,Tendring Hundred (Brett),2,Affinity Water,AFW,regional water only company,Part of water supply area, ,352091485.879913,501691.359679689
+9,Kent & Sussex,16,South East Water,SEW,regional water only company,Part of water supply area, ,4074776705.90952,573294.428048744
+10,Folkestone (Dour),1,Affinity Water,AFW,regional water only company,Part of water supply area, ,412285590.623535,184191.912622317
+11,Hampshire,24,Southern Water,SRN,regional water and sewerage company,Part of water supply area, ,1717774945.52359,436579.776541219
+12,Cambridge,18,South Staffordshire Water,SSC,regional water only company,Part of water supply area, ,1172206250.72185,303092.745161732
+13,Isle of Wight,26,Southern Water,SRN,regional water and sewerage company,Part of water supply area, ,380213048.135788,175666.802127215
+14,Hastings,25,Southern Water,SRN,regional water and sewerage company,Part of water supply area, ,160988071.8424,89965.7813693626
+15,Southern,17,South East Water,SEW,regional water only company,Part of water supply area, ,1487234323.52577,289048.940707385
+16,Yorkshire,36,Yorkshire Water,YKY,regional water and sewerage company,Whole water supply area, ,14311804738.5591,898885.186353834
+17,Portsmouth,13,Portsmouth Water,PRT,regional water only company,Whole water supply area, ,863694725.648556,472814.063323913
+18,Three Valleys,3,Affinity Water,AFW,regional water only company,Part of water supply area, ,3716141007.78786,631082.174080379
+19,Fawley,21,South West Water,SWB,regional water and sewerage company,Part of water supply area, ,10021823.986908,91761.084188098
+20,South West,23,South West Water,SWB,regional water and sewerage company,Part of water supply area, ,10301984693.1339,1755577.56788683
+21,United Utilities,34,United Utilities,UUW,regional water and sewerage company,Whole water supply area, ,14094987707.8403,2225608.51060425
+22,Thanet,29,Southern Water,SRN,regional water and sewerage company,Part of water supply area, ,342524376.925903,149564.920527456
+23,DÅµr Cymru,7,DÅµr Cymru,WSH,regional water and sewerage company,Whole water supply area, ,20139522181.7722,2796532.71219961
+24,Isles of Scilly,22,South West Water,SWB,regional water and sewerage company,Part of water supply area, ,16354639.7008839,112412.833454428
+25,Bournemouth,20,South West Water,SWB,regional water and sewerage company,Part of water supply area, ,1046470103.06179,314084.360506274
+26,Essex,9,Northumbrian Water,NES,regional water and sewerage company,Part of water supply area, ,1536164815.53026,999245.931382406
+27,Sussex,28,Southern Water,SRN,regional water and sewerage company,Part of water supply area, ,1298216782.68294,348345.912406183
+28,Veolia,209,Veolia Water Projects Ltd,VWS,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,27650405.1777649,26624.1201726687
+29,Anglian,4,Anglian Water,ANH,regional water and sewerage company,Part of water supply area, ,22593880928.602,3174416.15323593
+30,Hartlepool,5,Anglian Water,ANH,regional water and sewerage company,Part of water supply area, ,89409411.4729156,82365.3034605275
+31,Northumbria,10,Northumbrian Water,NES,regional water and sewerage company,Part of water supply area, ,8874970745.09108,935460.879811907
+32,South Staffordshire,19,South Staffordshire Water,SSC,regional water only company,Part of water supply area, ,1496916578.19761,431088.963075587
+33,Chester,14,Severn Trent Water,SVE,regional water and sewerage company,Part of water supply area, ,174976192.089073,90149.3364815005
+34,SWOX plus,33,Thames Water,TMS,regional water and sewerage company,Part of water supply area, ,6209472326.12528,757223.281641293
+35,Sutton & East Surrey,30,SES Water,SES,regional water only company,Whole water supply area, ,837221564.657135,198056.686767214
+36,London,32,Thames Water,TMS,regional water and sewerage company,Part of water supply area, ,1421281923.95797,372513.184035645
+37,"Croston Road (Phase 1 and 2), Leyland",263,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,179137.332122803,2226.2149762826
+38,"Firbeck Colliery, Worksop",275,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,124741.594390869,2069.71394117984
+39,Hatfield Lane,300,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,344367.083236694,3414.89569936466
+40,"Newcomen Way (Phase 2), Telford",345,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,8278.75076293945,441.245505944305
+41,"Rockferry, Woodhey",371,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,44303.5750350952,875.72666705833
+42,"Sovereign Fold Road, Leigh",380,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,27264.3929443359,846.775634046499
+43,"Topcliffe Road, Sowerby",401,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,48599.3493652344,966.819961354791
+44,Westwood Thanet Boundary Variation,417,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,3379.9654006958,235.791536739414
+45,"Wheatley Hall Road, Doncaster",421,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,56816.7843170166,1085.63023858225
+46,"Yardley Road, Milton Keynes",433,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,354409.923316956,2787.77403751418
+47,"CITU, Climate Innovation District Phase 2, Leeds",254,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,16083.9082183838,514.431406525406
+48,Liverpool John Lennon Airport,323,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,2045011.3459549,9698.0740272839
+49,"Former Horwich Locomotive Works, Bolton",282,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,159923.508804321,2219.26015127012
+50,"Appletree Farm, Cressing",215,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,52685.6720352173,1058.53719271194
+51,"Broad Oak Farm, Sturry",236,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,183465.618583679,2771.15916961264
+52,"Cedars Park 3C, Stowmarket",249,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,27050.2013702393,758.207736708029
+53,"Eastrea Road, Whittlesey",269,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,46909.2838897705,1034.03972620168
+54,"Foxby Lane, Gainsborough",284,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,192259.98324585,2387.98122141714
+55,"Land at Camp Field, Havant",316,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,23003.4782791138,952.869486564522
+56,"Land West of Bedford Road, Lower Stondon",321,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,30745.1374893188,724.282951457757
+57,"Little Tufts, Ipswich",322,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,50545.2464599609,956.671717662887
+58,"Manor Farm, Bedhampton",332,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,36340.927116394,790.39859761525
+59,"Merlins Point, Witham St Hughs",336,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,62153.3938446045,1142.86867726628
+60,"Newark Road, Peterborough",344,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,23150.2933197021,652.948378296924
+61,"Nightingale Road, Derby",347,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,83530.6193389893,1339.42576617777
+62,"Rawcliffe Road, Goole",366,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,159682.948074341,1789.08452233963
+63,"Shepherd's Lane, Shrewsbury",374,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,132332.383476257,1658.8058904795
+64,"Comeytrowe, Taunton",258,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1170558.05012894,9047.31103189247
+65,"Ashton Road, Oundle",218,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,44678.5375213623,1111.45675215249
+66,"Barnfield Avenue, Luton",221,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,53077.7730865479,1255.5212684785
+67,"Beckhill Approach, Meanwood",224,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,54385.6546783447,1018.21357818304
+68,"Bedford Road, Lower Stondon",225,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,60583.5541610718,1020.65329236947
+69,"Bromham Road, Bedford",239,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,127309.477989197,1969.45986132726
+70,"Cocoa East, York",257,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,16054.9385375977,589.796660681321
+71,"Ellison Fold Way, Darwen",271,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,175332.813430786,2305.6276784345
+72,"Graze Hill, Ravensden",292,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,177373.058616638,1742.42607449442
+73,"Grovelands Way, Warminster",294,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,105586.16059494,1694.51832169467
+74,"High Street, Walton, Felixstowe",305,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,134474.426864624,1876.41980555711
+75,"Land off Nursery Lane, South Wootton",319,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,58218.230255127,1101.56712890777
+76,"Land East of Eastboro Way, Nuneaton",318,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,152160.965675354,2021.63687644342
+77,"Longholme Road, Retford",327,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,28400.0218658447,682.891782776677
+78,"Nine Elms Park, Wandsworth",348,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,20411.5876312256,718.767844813401
+79,"Poplar Riverside, London",362,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,14475.7240905762,476.888672095024
+80,"Thames Avenue, Leigh",396,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,22722.7799224854,664.487367065886
+81,"Wardentree Lane, Pinchbeck",408,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,39569.0253753662,902.405071159523
+82,"Wateringbury Way, Eastbourne",410,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,10121.6557044983,413.00407298363
+83,"West Benton, Benton",413,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,311355.08531189,3591.87634836721
+84,"Market Quarter, Rugby",335,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,18803.8944625854,697.471632691452
+85,"The White Ox, Penrith",399,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,24009.3218841553,688.034229935373
+86,"Tudor Nurseries, Goffs Oak",403,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,147662.497840881,1895.50655334846
+87,"Upper Warren, Hartlepool",405,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,279189.684432983,2383.92067986527
+88,"Walkeringham Road, Beckingham",407,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,11978.8999938965,480.474133533468
+89,"Warton Fylde, Preston",409,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,123211.670333862,1865.472664569
+90,"Welbeck Road, Bolsover",411,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,84744.3773956299,1588.28956742371
+91,"Wentworth Way, Sheffield",412,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,49673.1921386719,999.87645018598
+92,"West Bridgewater Street, Leigh",414,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,48213.8394165039,1802.43130246608
+93,"Wey Valley, Nottington Lane",419,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,146240.07440567,1706.73520522339
+94,"Wharton Bridge, Winsford",420,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,47034.0777282715,918.710795536265
+95,"Whitefield Drive, Kirkby",422,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,64677.2432785034,1096.86217457261
+96,"Whittingham Lane, Preston",424,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,29611.761138916,895.370168149663
+97,"Windy Arbor Road, Prescot",427,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,149155.179298401,2082.37732057726
+98,"Wynyard (Phase 2), Billingham",431,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,97715.6858215332,2251.83215595449
+99,"Wyvern Park, Skipton",432,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,77616.5706787109,1759.43505727139
+100,"Barton Farm, (Phase 2a), Winchester",222,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,85101.0263938904,1372.65730927476
+101,"Former Edinburgh Park Docker's Club, Liverpool",280,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,49637.5206222534,955.772300055475
+102,"Hallgate Lane, Pilsley",296,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,28393.6679077148,768.266411923839
+103,"Whitehouse Farm, Emersons Green",423,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,25981.2597122192,743.919362890516
+104,"Cadley Hill, Walsall",243,South Staffordshire Water,SSC,regional water only company,inset, ,81272.3661956787,1524.86050884747
+105,"Ladden Garden Village Parcels 4,5,7 (Water)",313,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,354954.079711914,4708.59828544491
+106,"Cordy Lane, Brinsley",261,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,44711.9107055664,1172.58660572526
+107,"Abbey Gardens, Shaftesbury",213,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,67972.2011795044,1139.46088182151
+108,"Alton Brewery, Alton",214,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,47277.0900268555,1022.76662451184
+109,"Ashford Road, Hamstreet",216,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,82368.2320022583,1215.43961610421
+110,"Ashridge Farm, Wokingham",217,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,87284.3378372192,1438.03916117196
+111,"Basingstoke Golf Course, Basingstoke",223,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,444051.094978333,2962.45665249009
+112,"Belle Vue Greyhound Track, Manchester",226,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,47335.6863861084,870.894980399808
+113,"Blackburn Farm, Durham",228,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,42184.6794433594,1041.5563616384
+114,"Blackpool Road, Preston",229,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,95504.3014373779,1294.87344184647
+115,"Blakeston Lane (Boundary variation), Stockton-On-Tees",230,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,2160.34161376953,188.853146257484
+116,"Bosworth Lane, Leicester",231,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,38268.8861846924,927.633970552238
+117,"Brinsford Lodge, Wolverhampton",235,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,50696.8537063599,891.059256215557
+118,"Buckenham Road, Breckland",241,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,52604.0820770264,1089.24733476862
+119,"Burtree Lane, Harrowgate Village",242,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,171668.239639282,2116.82220455206
+120,"Candlet Road, Felixstowe",245,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,311220.795425415,2992.04622883278
+121,"Chesterfield Road, Brimington",251,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,65549.5513916016,1276.03122800049
+122,"Church Road, Otham",252,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,153270.209236145,2196.10472071559
+123,"Clifton Green, Salford",255,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,7207.78807067871,382.709597512813
+124,"Coney Green Road, Clay Cross",259,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,24143.1529541016,776.276440800368
+125,"Cranford Lodge, Manchester",262,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,25033.1644439697,839.406092944572
+126,"Dysart Road, Grantham",267,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,61801.6660614014,1280.79244854439
+127,"Eakring Road, Bilsthorpe",268,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,40585.1161193848,885.930635980927
+128,"Elsea Park (Zone 7), Bourne",273,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,50899.2683258057,1334.26741534383
+129,Elsea Park (Boundary amendment),272,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,67926.4351959229,1074.15418100664
+130,"Firs Road, Aldbury, Salisbury",276,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,20403.5096168518,1371.04740751099
+131,"Fontwell Avenue, Eastergate",279,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,14165.0049819946,502.515251429435
+132,"Former Foxwood School, Warrington",281,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,13020.018447876,441.015320051174
+133,"Foxdenton 2, Oldham",285,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,54983.2242889404,1528.59822362173
+134,"Goscote Lane, Walsall (Water)",289,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,87306.4652709961,1219.30240241523
+135,"Granby Farm, Harrogate",290,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,38893.3228302002,1013.90059494387
+136,"Greenhill Road (West), Canterbury",293,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,217365.495857239,2641.40862513903
+137,"Halton Court, Runcorn",297,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,28403.1443862915,914.29492303924
+138,"Hampshire Road, Walton-Le-Dale",298,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,13879.0525817871,506.423643212881
+139,"Helliers Lane, Cheddar",301,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,23653.8341674805,737.508892095138
+140,"Hesleden Road, County Durham",304,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,38682.4531555176,830.583099051835
+141,"Holts Lane, Poulton-Le-Fylde",307,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,43427.7437286377,957.524970309002
+142,"Kettering Road, Market Harborough",308,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,356964.33506012,2824.5222494909
+143,"Keyfold Farm, Preston",309,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,60323.1632995605,1280.93277686671
+144,"Kings Langley, Kings Meadow",310,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,15856.0616989136,646.341241519746
+145,"Kirby Lane, Melton Mowbray",312,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,72648.522354126,1157.20261661461
+146,"Lock Lane, Manchester",324,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,168734.332962036,3631.18943230441
+147,"London Road (Phase 1), Yaxley",325,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,753820.825942993,5126.44595844324
+148,"Loraine Way, Bramford",328,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,128707.509307861,1660.00455791685
+149,"Low Grange Farm, Middlesbrough",329,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,331842.300491333,3155.0860931104
+150,"Low Moor Side, Leeds",330,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,54159.560043335,1429.35393374161
+151,"Manor Farm (Phase 2, 3, 4 & 5), Doncaster",331,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,388521.547546387,2845.77061230862
+152,"Manor Road, Selsey",333,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,71451.6066703796,1054.3635011481
+153,"Middle Deepdale, Scarborough",337,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,336990.548919678,3246.91009615018
+154,"Mill Lane, Elswick",338,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,46838.5484161377,903.947895439811
+155,"Moss House Road, Blackpool",339,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,39263.8007354736,1150.23877909893
+156,"Mount Pleasant, London",340,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,10795.9961853027,440.876474728794
+157,"Mount Vernon Road, Barnsley",341,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,13101.5960540771,552.553170665531
+158,"New Lane, Blidworth",343,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,29965.4711151123,767.587087675505
+159,"Newcomen Way, Telford",346,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,33832.5017700195,1096.46740960304
+160,"Norwich Road, Swaffham",350,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,68076.2576141357,1065.84496985761
+161,"Oldwood Road, Tenbury Wells",351,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,39542.4985733032,1181.40703122145
+162,"Omega 3b, Warrington",352,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,48172.0731658936,990.67300120029
+163,"Orchard Close, Knaresborough",354,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,23815.0454559326,671.212513949744
+164,"Oxford North (Phase 1A-C), Wolvercote",356,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,120265.031303406,3414.10746092306
+165,"Pebble Walk, Hayling Island",358,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,54232.4171638489,1238.7624992233
+166,"Pit Lane, Micklefield",359,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,38371.627243042,901.301235346857
+167,"Plaistow Road, Kirdford",360,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,26410.5538825989,663.098153282461
+168,"Poorhole Lane, Broadstairs",361,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,61738.6494064331,1113.46575591013
+169,"Portfield Quarry, Chichester",364,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,20004.5284843445,752.673000980486
+170,"Port Loop (Phases 3 and 4), Birmingham",363,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,32917.5326385498,934.790309136124
+171,"River View, Witham",369,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,49314.333984375,1356.99129359605
+172,"Rugby Radio Station, Rugby",373,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,49280.392791748,872.788389068675
+173,"Soham Road, Fordham",375,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,21423.8338775635,761.93598965622
+174,"Southampton Road, Titchfield",379,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,38078.2507705688,756.98526707729
+175,"Southfield Lane, Tockwith",378,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,57409.1806182861,1037.04827857889
+176,"Stainburn, Workington",383,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,45228.7372436523,1037.10792233779
+177,"Station Road, Pershore",389,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,202361.16179657,2252.45252705713
+178,"Station Road, Darley Dale",385,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,30151.0097198486,1112.3203831136
+179,Stewartby Phase 5 Boundary Variation,390,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,16653.7947845459,889.009825068818
+180,"Stoneham Stage 2, Manor Farm",391,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,137611.205860138,1639.93895844362
+181,"Swing Swang Lane, Basingstoke",392,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,47485.5892333984,986.790498684963
+182,"Sycamore Lane, Warrington",394,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,22569.6942749023,606.359872497942
+183,"Sydney Road, Crewe",395,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,89201.8462982178,1606.43860501789
+184,"Land off Tabley Lane, Preston",320,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,98430.6194763184,2288.47608199025
+185,"Clipstone Road, Mansfield",256,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,104394.180557251,1528.41326545456
+186,D'Urton Lane,266,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,125107.175476074,2234.20923605263
+187,"Regent's Plaza, Salford",368,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,9362.48921203613,462.142529200307
+188,"Trafford Plaza, Manchester",402,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,2522.3032989502,215.787739517279
+189,"55 Queen Street, Salford",212,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1634.01141357422,161.714683469316
+190,"Bridle Lane, Downham Market",233,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,92416.4488220215,1708.34406491035
+191,"Castle Irwell, Salford",248,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,146897.547607422,1677.07769622896
+192,"Castle Way, Old Sarum, Wiltshire",177,Leep Networks (Water) Limited (formerly SSE Water Ltd),SSE,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,28126.1653251648,704.065742732846
+193,"Conrad Road, Witham",260,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,62368.9248657227,1265.48744695496
+194,"Element - The Quarter, Liverpool",270,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,6825.10480499268,376.199273572678
+195,"Gold Lane, Biddenham",288,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,48123.7428359985,992.217851949663
+196,"Graylingwell Park Ph9A, Chichester",291,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,9394.59121704102,499.510402980135
+197,"Harry Stoke, Hambrook",299,Icosa Water Services Limited,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,93382.6089897156,1530.62989671618
+198,"Land At 76 - 82 Oldham Street, Manchester",315,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,2351.01191711426,309.379215061716
+199,"Land at Lyde Green Farm, Bristol",317,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,124222.230552673,1871.12269470968
+200,"One Baltic Square, Liverpool",353,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,7012.36061096191,338.847093840637
+201,"Oxted Gardens, Station Road East",357,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,6075.48575592041,384.480047307125
+202,"The Portway, Old Sarum, Wiltshire",176,Leep Networks (Water) Limited (formerly SSE Water Ltd),SSE,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,367421.030281067,3761.11343689107
+203,"Redhill Way, Telford",367,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,306160.618133545,2418.84614836325
+204,"Station Road, Mickleover",388,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,98254.7834320068,1663.08372576217
+205,"Wirral Waters, Birkenhead",428,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,29023.0593948364,1171.50264458134
+206,"Worrall Street, Salford",430,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1218.50109863281,151.653001449969
+207,"Heriot Street, Liverpool",302,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,3049.24137115479,230.042993616743
+208,"Cardington Hangars, Bedford",246,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,234880.237350464,2611.70590565649
+209,"Kingsfleet (Parcel 1B), Thetford",311,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,45328.1008758545,944.038896923101
+210,"Twigworth, Gloucester",404,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,316236.739112854,3602.52539784038
+211,"Vernon Works, Oldham",406,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,22270.6273498535,599.011396797285
+212,"West Durrington Northern Sector, Worthing",415,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,104751.812866211,2011.34750606578
+213,"Wilton Park, Beaconsfield",426,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,394074.650505066,4914.4737707937
+214,"Dappers Lane, Littlehampton",264,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,37475.6161956787,989.34386619042
+215,"Donnington Wood, Telford",265,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,147935.7681427,3331.12653792461
+216,"Engine Lane, Nailsea",274,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,75814.3162918091,2143.69995798903
+217,"Friary Park (Phase 1A), Acton",286,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,10856.2815322876,632.659083176654
+218,"Furlong Way, Sleaford",287,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,129781.938293457,1824.95336166701
+219,"17-51 London Road, Staines (E09508)",211,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,9828.09452056885,402.550244236353
+220,"Barbrook Lane, Tiptree",219,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,91051.5170135498,1603.25524428013
+221,"Bargate Quarter, Southampton",220,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,12678.777961731,859.112569680436
+222,"Berechurch Hall Road, Colchester",227,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,50349.6509017944,1076.49325154422
+223,"Brent Cross Phase 2, Wembley",232,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,53931.5640869141,1373.97587452948
+224,"Brighouse Road, Halifax",234,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,32078.4289855957,1014.30261180392
+225,"Broadland Fields (Phase 1 & 2), Norfolk",238,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,230439.326126099,2063.0886350581
+226,"Broad Street, Clifton",237,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,44211.0067062378,1218.20885916871
+227,"Broomhill Farm, Hucknall",240,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,92784.278137207,1368.07497459067
+228,"Canalside Copper Athletics Track, Woking",244,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,26661.1533126831,664.530709162899
+229,"Carrwood Road, Preston",247,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,17775.5946960449,586.156481993546
+230,"CEG North Abingdon, Oxfordshire",250,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,309171.480453491,3238.26086073866
+231,"Churchfields, Kidderminster",253,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,66550.5390625,1205.125773934
+232,"Fishpool Hill, Bristol",277,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,520460.834213257,5636.78943507383
+233,"Flaxwell Fields, Sleaford",278,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,72086.8008117676,1067.95535430149
+234,"Four Lane Ends, Bishop Auckland",283,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,95414.1009521484,1309.23598075266
+235,"Hadham Road, Bishops Stortford",295,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,41311.4893951416,855.926532044033
+236,"Hertford Gas Works, Hertford",303,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,36051.2595596313,1197.04041062378
+237,"Hollowdyke Lane, Fernwood",306,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,138895.135101318,1679.17293133241
+238,"Land Adjacent to Gleneagles Way, Hatfield Peveral",314,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,49331.2715988159,1269.4058712761
+239,"London Road, Markfield",326,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,192966.749557495,2427.38823790192
+240,"Manor Way, Stanford Le Hope",334,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,65779.5980377197,1255.82815227589
+241,Netherton Wood Lane,342,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,241754.343955994,2081.66856903692
+242,"Nine Elms Square (Phase 1), London",349,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,20146.8808059692,617.237773636924
+243,"Oval Village, Kennington",355,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,38273.5173950195,790.016265859619
+244,"Ramsgreave Drive, Blackburn",365,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,35273.485244751,868.893473522065
+245,"Riverside Way, Barrowford",370,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,78735.3151092529,1621.93129680591
+246,"Rolleston Park (Arnold), Nottinghamshire",372,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,35000.6022949219,825.557295624153
+247,"Soho Loop, Dudley Rd, Birmingham",376,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,45494.6210632324,905.154265261614
+248,"South Chesterton, Cirencester",377,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1084430.29226685,7720.8013141933
+249,"Station Rd, Long Melford",387,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,79127.7946472168,1245.90642559012
+250,"Station Road, Crewkerne",384,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,485839.841468811,4850.53524317244
+251,"Station Road, Grimsby",386,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,235380.416946411,2078.03809122438
+252,St Helens Road (Boundary amendment),382,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,5272.04040527344,485.57989754029
+253,"St Helens Road, Bolton",381,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,30366.9613494873,1004.26356126187
+254,"Swinnow Park, Leeds",393,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,401441.159729004,3797.0055381232
+255,"The Sands, Benson, Ewelme",398,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,120519.228889465,2090.232765311
+256,"The Asps, Warwick",397,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,558363.696578979,3364.8524878916
+257,"Thornton Park, Clapham Common",400,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,16106.091217041,850.211066444468
+258,Westwood Thanet,416,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,162250.602088928,1629.64201033864
+259,"Willow Lane (Phase 2), Beverley",425,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,133510.434890747,1464.41846156816
+260,"Womb Farm, Chatteris",429,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,80324.9881134033,1793.66545573613
+261,Parc Llanilid,201,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1424292.01657867,11439.6903917751
+262,"Lea Castle, Cookley",145,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,427267.905387878,4398.58136631418
+263,"Coronation Square, Leyton",172,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,28103.9625701904,843.288705323088
+264,"Stewartby Phase 5, Bedford",165,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,25920.2837524414,680.014724445227
+265,"Bonnington Walk, Bristol",150,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,61835.639465332,1530.43729481393
+266,"Turpins Farm, Frinton on Sea",169,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,111752.083450317,1295.35834589294
+267,"Stones Farm, Sittingbourne",58,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,332050.36541748,2594.81833227622
+268,"Cribbs Causeway, Bristol",154,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,402830.645206451,5617.41612568099
+269,"Drove Lane, Yapton",156,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,119948.522895813,1504.53785671535
+270,"Dunston Road, Lincoln",157,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,149920.725616455,1965.95842857525
+271,"Folkestone Seafront, Kent",159,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,5076.99964141846,313.794071411994
+272,"Norwood Farm, Harpole",160,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1033186.45084381,6477.66593121525
+273,"Percy Drive, Morpeth",161,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,134966.312301636,1514.07083068012
+274,"Salhouse Road 2, Norwich",162,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,110678.226150513,1453.17929536828
+275,"Seaton Vale, Ashington",163,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,275981.046585083,2543.00809999243
+276,"Stone Path Drive, Chelmsford",166,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,93526.2692947388,1322.42547606576
+277,Thanet Way,167,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,128758.58140564,1782.99255808057
+278,"Weeley Road, Great Bentley",170,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,77907.8718032837,1300.52620356861
+279,"Boorley Gardens, Eastleigh",57,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,439431.35238266,3660.24421753225
+280,"Ashfield Road, Elmswell",149,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,41480.794342041,1035.55517786017
+281,Brent Cross South (phase 1a.1),151,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,60153.1168518066,1721.1620459993
+282,"Calverswall Lane, Meir",152,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,82240.4828491211,1297.19490535701
+283,"Cell A, Newcastle Great Park",138,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,560037.426177979,3139.78896192294
+284,"Chapelgarth, Sunderland",139,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,301523.705993652,2561.6213303557
+285,"City Fields (including Phase 5), Wakefield",153,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset,Site boundary under review due to overlapping application,259099.345947266,3074.11327951962
+286,"Doncaster Road, Hatfield",155,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,76228.2442016602,1246.12154106783
+287,"Edderacres Walk, Wingate",158,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,101302.517807007,1310.32287691538
+288,Halstead Road,140,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,76413.1063461304,1516.14018387774
+289,"Heathlands West, Wakefield",142,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,60347.9255218506,1386.31597588446
+290,Heath Lane,141,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,28637.6332702637,808.755278156838
+291,"Hitchin Road, Shefford",143,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,112116.217010498,2209.20502076131
+292,Keston Nurseries,144,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,59596.741317749,1307.22174824353
+293,Old Norwich Road,146,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,97325.7920074463,1457.50166893089
+294,"Southend Lane (Phase 4), Newent",164,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,65237.0244445801,1025.94128345839
+295,"St Neots Road, Hardwick",147,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,70638.4375762939,1654.42815612784
+296,"Tunstall Farm, Hartlepool",168,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,97042.138458252,1703.80805004472
+297,West Road,148,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,56129.0017623901,1189.66990000835
+298,"Wynyard Park, Billingham",171,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,33292.5096282959,773.25818535008
+299,"Lodge Farm, Witham",12,Northumbrian Water Limited,NES,regional water and sewerage company,inset, ,80978.4449996948,1193.8445448997
+300,"Blakeston Lane, Stockton-On-Tees",137,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,24749.2825927734,768.563188394933
+301,"Church Street, Langford",134,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,51996.3377075195,1217.08991656271
+302,Kingsgate East,136,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,225792.239013672,2205.0127743645
+303,Sportsmans Farm,135,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,42387.9117965698,1075.94968532362
+304,"Whittle Gardens, Innsworth",56,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,648908.985832214,4659.85857905977
+305,Harland Way,133,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,43999.9471130371,978.354810468145
+306,"Marsh Road, Burnham-on-Crouch",132,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,51663.9107894897,1012.64627328586
+307,Archers Court Road (South),125,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,110171.577545166,1640.80534526496
+308,Cookridge Phase 2,130,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,25427.6017608643,917.203933776516
+309,Green Lane East,131,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,78438.7874450684,1186.09970566168
+310,H26 Grosvenor Road,123,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,33505.7194519043,768.272870242978
+311,Naisberry Farm,129,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,111994.478118896,1476.65696282859
+312,Portholme Road,124,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,28324.275100708,1026.68892402859
+313,"The Spires, Chichester",128,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,92135.8420829773,2321.65645757839
+314,"Thorney Green, Stowupland",126,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,102493.408187866,1456.56417009223
+315,"Watery Lane, Fleet",127,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,321534.507469177,5170.7519324829
+316,No.1 Old Trafford,174,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,5115.23281860352,305.428077249455
+317,"Chester Road, Pennywell, Sunderland",121,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,45989.0627746582,1037.54881193611
+318,"Chilton Woods, Sudbury, Suffolk",120,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,776075.273712158,5203.28225400418
+319,"Manor Road, Norwich, Norfolk",122,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,17941.7225494385,650.218091648141
+320,"Rowtree Park, Collingtree, Northampton",119,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,234719.40537262,2338.05292787196
+321,"Chatham Waters, Gillingham",207,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,88554.2890625,1473.12612571426
+322,"Fairfield Park & Lower Wilbury Farm, Arlesey, Bedfordshire",37,Affinity Water,AFW,regional water only company,inset, ,1178308.00140381,5699.70652678232
+323,"Five Oaks Lane, Chigwell",39,Albion Water Ltd,ALB,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,219572.297058105,3617.25930046342
+324,"Rissington, Gloucestershire",40,Albion Water Ltd,ALB,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,683840.071624756,4619.6240842242
+325,"Buxted Chicken Farm, Flixton, Surrey",41,Anglian Water,ANH,regional water and sewerage company,inset, ,50748.5171813965,1055.8207642322
+326,Northstowe Phase One,42,Anglian Water,ANH,regional water and sewerage company,inset, ,969261.971237183,5434.59371609551
+327,"Woods Meadow, Oulton",43,Anglian Water,ANH,regional water and sewerage company,inset, ,551698.852554321,4712.25783245018
+328,Rochester Riverside,51,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,250710.78969574,4173.54374015181
+329,Barnhorn Green,44,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,257374.00390625,2718.71002866821
+330,Broadland Gate,45,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,308864.384933472,3657.91283556615
+331,Conningbrook,46,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,489478.274856567,5135.71236666255
+332,"Forstal Lane, Coxheath",47,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,79120.3446731567,1148.59728006533
+333,"Marden Road, Staplehurst",48,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,121761.233520508,2437.00205505225
+334,"Norwich Road, Thetford",49,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,144040.832672119,1709.65683514786
+335,Ospringe Parcel B,50,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,32694.3087921143,753.458367765133
+336,"Ulcombe Road, Headcorn",52,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,84975.6422195435,1727.48948737495
+337,West Raynham,53,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,643028.574035645,4875.23457449246
+338,Westridge Village,54,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,42768.695930481,974.293782169703
+339,"Ashby Road, Tamworth",60,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,755949.194015503,4962.96337226067
+340,Greetwell Fields,79,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,198353.693267822,2359.04662828044
+341,"Berryfields, Aylesbury",61,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1942824.8194046,8183.93673082535
+342,"Great Billing Way, Northampton",77,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,47945.7394332886,1065.8471982678
+343,Greenwich Millennium Village,78,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,105248.512138367,2188.26660602636
+344,King's Cross Central,82,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,234320.605003357,2527.41292255532
+345,"Long Croft Road, Stannion, Corby",86,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,415540.163726807,2791.52470218159
+346,"Priors Hall, Corby",100,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,3710738.59191895,10385.8967380402
+347,"The Bridge, Dartford",103,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,261511.052017212,2683.43656462014
+348,Bidwell West plus variation,62,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1989253.84111023,11496.9085371673
+349,Bishops Stortford,63,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1145079.98875427,6968.41911005461
+350,Blythe Valley Park,64,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,383384.561050415,3189.02771476151
+351,Chilmington Green,67,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,4249631.18979645,12320.7660474037
+352,Clipstone Park,68,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1240838.20959473,7893.2999014085
+353,Cockering Road,69,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,614803.847732544,4880.00143359108
+354,Colney Lane,70,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,541009.258758545,3699.97590032398
+355,Cowdray Centre,71,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,49853.3878173828,1152.91206997295
+356,Europa Way,73,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,402961.846138,3475.41923786076
+357,Factory Lane,74,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,91435.0130615234,1565.64775545754
+358,Henley Road,80,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,792661.841674805,5285.16354596116
+359,Ings Lane,81,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,503519.988845825,5864.00471434064
+360,Limebrook Way,84,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,786650.233222961,3919.55998622037
+361,"Lincolnshire Lakes, Scunthorpe",85,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,2527657.44560242,9929.55662164106
+362,Malyons Lane,87,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,228763.426124573,2882.13091628738
+363,"Minster Way, Beverley",90,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,418317.138122559,4006.08414499209
+364,Oakham Phase 1 and 2,93,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,354584.669769287,3674.00375290405
+365,Parklands,97,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,930369.332057953,6670.18811068064
+366,Pitty Close Farm,98,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,105336.808746338,1592.65695624954
+367,Prebend Lane,99,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,192609.417572021,1913.22973682753
+368,Salhouse Road,101,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,173857.768936157,2874.69098839791
+369,Throckley North,104,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,306030.158706665,3144.50300472824
+370,"Ashby Road, Daventry",59,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,376620.979858398,3257.43169597948
+371,Breary Lane,65,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,205660.520370483,2663.88186186263
+372,"Castle Hill, Ebbsfleet",66,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,769066.227882385,4205.82292214772
+373,"Eastern Quarry, Ebbsfleet",72,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1678176.08242798,5620.14839892029
+374,"Forgewood, Crawley",75,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,758828.045669556,7228.20379484071
+375,Lambton Park,83,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,210061.750350952,1893.8677529794
+376,Manse Farm,88,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,354799.606292725,2715.5927065685
+377,Martello Lakes,89,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,454960.490821838,3970.69151855143
+378,"Former Nestle Factory, Nestle's Avenue, Hayes",76,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,68391.0034255981,1271.50086174329
+379,Newmarket Road,91,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,607113.374389648,5234.77596782192
+380,North Whiteley,92,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,962786.940738678,6128.00998373301
+381,Oakwood Park,94,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,137138.263534546,1800.26354431775
+382,Otterham Quay Lane,95,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,125212.463600159,1822.1102852502
+383,Palfrey Bungalow,96,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1760.69493103027,169.66155029261
+384,St Giles Park,102,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,284096.731109619,2556.44276088937
+385,"Turners Hill Road, West Sussex",105,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,86797.5268630981,1277.0097544591
+386,Tamworth West Centurion Way,208,South Staffordshire Water,SSC,regional water only company,inset, ,74677.4358673096,1277.20592709614
+387,"Barking Riverside Phase 2,3,4",179,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset,Requires variation to correct the boundary,920373.929145813,5832.30857888512
+388,Barking Riverside Phase 1,178,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset,Requires variation to correct the boundary,208031.244316101,2289.272656693
+389,"Brewery Square, Dorchester South",180,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,44217.6582298279,1333.10070429549
+390,Bromley Common,181,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,97400.4701766968,1663.0064548385
+391,"Embassy Gardens Phase 2, Nine Elms, London",183,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,22055.2978591919,714.222219755403
+392,"Emersons Green, South Gloucestershire",185,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,962406.291164398,7265.9996040599
+393,"Farndon Road, Market Harborough",186,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,239719.775169373,2507.68319679402
+394,"Graylingwell Park, Chichester",187,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,342496.978973389,4823.96419837976
+395,"Great Western Park, Didcot",188,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset,Requires variation to correct the boundary,1806246.30702209,9971.14192007001
+396,"Hale Village,Tottenham",189,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,48659.9467391968,895.89983701965
+397,Heart Of East Greenwich,190,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset,Requires variation to correct the boundary,29829.9396820068,742.568824793815
+398,"Hills Farm Lane, Horsham",191,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,448433.910030365,3863.92529074162
+399,"Kennet Island Phase 5 and 6, Reading",192,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,38924.6861190796,997.890061187659
+400,"Kennet Island Phase 7, Reading",193,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,73384.7779006958,1506.78179985352
+401,Kingsbrook,194,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,3065804.72286987,18619.2374648879
+402,"Kingsmere, Bicester",195,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset,Requires variation to correct the boundary,992862.423324585,4498.23209358134
+403,"Marine Wharf, Deptford",196,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,28717.7538528442,735.987666010907
+404,"Millharbour Central, Millwall",197,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,10290.1850891113,434.343516793988
+405,"New South Quarter, Croydon",198,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,24797.2168502808,842.483230748036
+406,"Newlands, Waterlooville",199,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,1874690.60429001,9464.46830296786
+407,"Norwich Common, Wymondham",200,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,121868.154037476,1793.25548830424
+408,"Park Views, Epsom",202,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,169935.185310364,2294.95705585521
+409,"Prince of Wales Drive, Battersea",203,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,20871.8766860962,607.109653936388
+410,"RAM Quarter, Wandsworth",204,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,16108.4075469971,506.573642676626
+411,"Riverlight, Battersea",205,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,20885.0177078247,765.57306767628
+412,White City,206,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,40597.7958602905,966.2785684483
+413,Shotton,38,Albion Eco Ltd,ALBE,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,705312.825325012,3427.99336695799
+414,Liverpool International Business Park,173,Leep Networks (Water) Ltd,LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,883813.491065979,4527.30763499967
+415,"Media City, Salford Quays",175,Leep Networks (Water) Ltd (formerly Peel Water Networks Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,108112.81791687,1643.41999489705
+416,"Pork Farms (Bowyers), Trowbridge, Wiltshire",210,Wessex Water,WSX,regional water and sewerage company,inset, ,38635.7929077148,846.948659185117
+417,"Embassy Gardens Phase 1, Nine Elms, London",182,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,22467.9331741333,685.883562543377
+418,"Emersons Green Gateway, South Gloucestershire",184,Leep Networks (Water) Ltd (formerly SSE Water Ltd),LEP,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,84887.5139350891,1330.49294959933
+419,"Nightingale Quarter, Derby",107,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,71397.867401123,1141.75024963264
+420,"Salhouse Road 3, Norwich",106,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,246269.283859253,2701.53170475097
+421,"Sutton Road, Maidstone",108,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,473353.162887573,3824.07312836066
+422,"Toddington Lane 910, Littlehampton",55,Icosa Water Services Ltd,ICW,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,749590.242153168,5408.6252872555
+423,"Church Lane, Cayton, Scarborough",109,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,19425.9881134033,713.405100923023
+424,"Harbour Place, Havant",110,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,218550.688407898,2236.17095234476
+425,"Monk Bridge, Whitehall Road, Leeds",111,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,15372.8508758545,688.82603237801
+426,"Stoneham Lane, Eastleigh",112,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,23400.4676475525,853.054037543566
+427,"Deer Park, Southampton",115,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,504165.591510773,3049.78087433532
+428,"Market Place, South Cave",113,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,42634.532333374,941.515950952641
+429,"Norwich Road, Acle",117,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,55777.8077850342,1159.35465126205
+430,Shopwhykes Lakes,116,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,53663.4935112,1054.96523178165
+431,"Stumpcross Lane, Pontefract",114,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,26829.3885345459,680.930963030214
+432,"Windmill Views, Barnham",118,Independent Water Networks Ltd,IWN,small new entrant water/sewerage company (sometimes referred to as a NAV),inset, ,33128.5255241394,777.06097539534

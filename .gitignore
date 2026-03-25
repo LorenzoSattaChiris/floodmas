@@ -23,3 +23,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Large dataset files (>100MB) — deploy manually to VPS
+src/dataset/floodwaterbody/WFD_River_Water_Body_Catchments_Cycle_2.geojson

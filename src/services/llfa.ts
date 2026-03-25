@@ -11,6 +11,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import XLSX from 'xlsx';
 import { logger } from '../logger.js';
+import { getDefences, getSpend, getHomesBetterProtected, getPropertiesAtRisk } from './datasets.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -104,6 +105,13 @@ export interface LLFAFeatureProperties {
   LAT: number;
   hasStrategy: boolean;
   strategy?: LLFAStrategyInfo;
+  // Flood management stats (joined from floodriskmanage dataset by ONS code)
+  defenceCount: number | null;
+  defenceCondition: number | null;
+  totalSpend: number | null;
+  homesProtected: number | null;
+  propertiesHighRisk: number | null;
+  propertiesHighRiskPct: number | null;
 }
 
 export interface LLFAGeoJSON {
@@ -268,12 +276,26 @@ function loadLLFABoundaries(): LLFAGeoJSON {
     const raw = readFileSync(geoPath, 'utf8');
     const geojson = JSON.parse(raw);
 
+    // Build stats lookup maps from floodriskmanage datasets (joined by ONS code)
+    const defMap = new Map(getDefences('utla').map(d => [d.code, d]));
+    const spendMap = new Map(getSpend('utla').map(s => [s.code, s]));
+    const homesMap = new Map(getHomesBetterProtected('utla').map(h => [h.code, h]));
+    const propsMap = new Map(getPropertiesAtRisk('utla').map(p => [p.code, p]));
+
     const features = (geojson.features || []).map((f: any) => {
       const code: string = f.properties?.CTYUA24CD || '';
       const name: string = f.properties?.CTYUA24NM || '';
       const normName = normaliseName(name);
 
       const strategyInfo = llfaInfoMap.get(normName);
+
+      // Enrich with flood management stats
+      const def = defMap.get(code);
+      const spend = spendMap.get(code);
+      const homes = homesMap.get(code);
+      const props = propsMap.get(code);
+      const latestSpendYear = spend ? Object.keys(spend.years).sort().pop() : null;
+      const latestPropsYear = props ? Object.keys(props.years).sort().pop() : null;
 
       return {
         type: 'Feature' as const,
@@ -288,6 +310,12 @@ function loadLLFABoundaries(): LLFAGeoJSON {
           LAT: f.properties?.LAT ?? 0,
           hasStrategy: !!strategyInfo,
           ...(strategyInfo ? { strategy: strategyInfo } : {}),
+          defenceCount: def?.numberOfDefences ?? null,
+          defenceCondition: def?.avgCondition ?? null,
+          totalSpend: latestSpendYear ? spend!.years[latestSpendYear].totalCapitalSpend : null,
+          homesProtected: homes ? Object.values(homes.years).reduce((sum: number, v) => sum + (v ?? 0), 0) || null : null,
+          propertiesHighRisk: latestPropsYear ? props!.years[latestPropsYear].numberAtHighRisk : null,
+          propertiesHighRiskPct: latestPropsYear ? props!.years[latestPropsYear].pctAtHighRisk : null,
         } as LLFAFeatureProperties,
       };
     });

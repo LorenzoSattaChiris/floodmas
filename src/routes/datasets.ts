@@ -9,6 +9,15 @@ import {
   getPostcodeRisk,
   searchPostcodes,
   getPropertyRiskSummary,
+  getWFDCatchments,
+  getNFMHotspots,
+  getSchools,
+  getHospitals,
+  getBathingWaters,
+  getRamsar,
+  getWaterCompanyBoundaries,
+  getEDMOverflows,
+  getWINEPOverflows,
 } from '../services/datasets.js';
 import { logger } from '../logger.js';
 
@@ -121,6 +130,96 @@ router.get('/properties-risk-summary', (_req: Request, res: Response) => {
   } catch (err) {
     logger.error({ err }, 'Failed to get properties risk summary');
     res.status(500).json({ error: 'Failed to get properties risk summary' });
+  }
+});
+
+/** GET /api/datasets/waterbody-catchments — WFD River Waterbody Catchments Cycle 2 GeoJSON (WGS84) */
+router.get('/waterbody-catchments', (_req: Request, res: Response) => {
+  try {
+    res.json(getWFDCatchments());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get WFD catchments');
+    res.status(500).json({ error: 'Failed to get WFD catchments' });
+  }
+});
+
+/** GET /api/datasets/nfm-hotspots — NFM Heat Maps / Hotspots GeoJSON (WGS84) */
+router.get('/nfm-hotspots', (_req: Request, res: Response) => {
+  try {
+    res.json(getNFMHotspots());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get NFM hotspots');
+    res.status(500).json({ error: 'Failed to get NFM hotspots' });
+  }
+});
+
+/** GET /api/datasets/schools — State-funded schools GeoJSON (WGS84 points) */
+router.get('/schools', (_req: Request, res: Response) => {
+  try {
+    res.json(getSchools());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get schools data');
+    res.status(500).json({ error: 'Failed to get schools data' });
+  }
+});
+
+/** GET /api/datasets/hospitals — CQC health/care locations GeoJSON (WGS84 points) */
+router.get('/hospitals', (_req: Request, res: Response) => {
+  try {
+    res.json(getHospitals());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get hospitals data');
+    res.status(500).json({ error: 'Failed to get hospitals data' });
+  }
+});
+
+/** GET /api/datasets/bathing-waters — EA Bathing Water Quality GeoJSON (WGS84 points) */
+router.get('/bathing-waters', (_req: Request, res: Response) => {
+  try {
+    res.json(getBathingWaters());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get bathing waters data');
+    res.status(500).json({ error: 'Failed to get bathing waters data' });
+  }
+});
+
+/** GET /api/datasets/ramsar — Ramsar Wetlands (England) GeoJSON polygons (WGS84) */
+router.get('/ramsar', (_req: Request, res: Response) => {
+  try {
+    res.json(getRamsar());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get Ramsar wetlands data');
+    res.status(500).json({ error: 'Failed to get Ramsar wetlands data' });
+  }
+});
+
+/** GET /api/datasets/water-company-boundaries — Ofwat Water Company Boundaries GeoJSON (WGS84) */
+router.get('/water-company-boundaries', (_req: Request, res: Response) => {
+  try {
+    res.json(getWaterCompanyBoundaries());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get water company boundaries data');
+    res.status(500).json({ error: 'Failed to get water company boundaries data' });
+  }
+});
+
+/** GET /api/datasets/edm-overflows — EDM Storm Overflows 2024 GeoJSON points (WGS84) */
+router.get('/edm-overflows', (_req: Request, res: Response) => {
+  try {
+    res.json(getEDMOverflows());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get EDM overflows data');
+    res.status(500).json({ error: 'Failed to get EDM overflows data' });
+  }
+});
+
+/** GET /api/datasets/winep-overflows — WINEP Storm Overflows Under Investigation GeoJSON points (WGS84) */
+router.get('/winep-overflows', (_req: Request, res: Response) => {
+  try {
+    res.json(getWINEPOverflows());
+  } catch (err) {
+    logger.error({ err }, 'Failed to get WINEP overflows data');
+    res.status(500).json({ error: 'Failed to get WINEP overflows data' });
   }
 });
 
